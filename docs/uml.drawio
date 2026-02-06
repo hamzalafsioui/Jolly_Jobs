@@ -1,0 +1,146 @@
+<mxfile host="65bd71144e">
+    <diagram id="dWZOUQR635NGIs40Pc8c" name="Page-1">
+        <mxGraphModel dx="1028" dy="495" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="User&lt;br&gt;---&lt;br&gt;+ id: int&lt;br&gt;+ first_name: string&lt;br&gt;+last_name: string&lt;br&gt;+ email: string&lt;br&gt;+ password: string&lt;br&gt;+ user_type: string&lt;br&gt;+ photo: string&lt;br&gt;+ bio: text&lt;br&gt;+ last_login: timestamp&lt;br&gt;is_active: boolean&lt;br&gt;+ email_verified_at: timestamp&lt;br&gt;---&lt;br&gt;+ register()&lt;br&gt;+ login()&lt;br&gt;+ logout()&lt;br&gt;+ updateProfile()&lt;br&gt;+ changePassword()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="325" y="25" width="200" height="290" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Recruiter&#xa;---&#xa;+ id: int&#xa;+ user_id: int&#xa;+ company_name: string&#xa;+ company_size: string&#xa;+ industry: string&#xa;+ website: string&#xa;+ description: text&#xa;---&#xa;+ getCompanyInfo()&#xa;+ updateCompanyInfo()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="380" width="200" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="JobSeeker&#xa;---&#xa;+ id: int&#xa;+ user_id: int&#xa;+ specialty: string&#xa;+ experience_level: string&#xa;+ skills: text&#xa;+ cv_path: string&#xa;---&#xa;+ getSpecialty()&#xa;+ uploadCV()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="600" y="670" width="200" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="Friendship&#xa;---&#xa;+ id: int&#xa;+ sender_id: int&#xa;+ receiver_id: int&#xa;+ status: string&#xa;---&#xa;+ sendRequest()&#xa;+ acceptRequest()&#xa;+ rejectRequest()&#xa;+ getFriends()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="320" y="600" width="200" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="has" style="endArrow=block;endFill=0;endSize=12;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="3">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="320" y="170" as="sourcePoint"/>
+                        <mxPoint x="140" y="350" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="140" y="170"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="7" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="6">
+                    <mxGeometry x="-0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="0..1" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="6">
+                    <mxGeometry x="0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="has" style="endArrow=block;endFill=0;endSize=12;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="4">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="520" y="170" as="sourcePoint"/>
+                        <mxPoint x="700" y="350" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="700" y="170"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="10" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="9">
+                    <mxGeometry x="-0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="0..1" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="9">
+                    <mxGeometry x="0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="sender" style="endArrow=none;endFill=0;endSize=12;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="5">
+                    <mxGeometry width="160" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="12">
+                    <mxGeometry x="-0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="12">
+                    <mxGeometry x="0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="receiver" style="endArrow=none;endFill=0;endSize=12;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="5">
+                    <mxGeometry width="160" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="15">
+                    <mxGeometry x="-0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="15">
+                    <mxGeometry x="0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="Education&#xa;---&#xa;+ id: int&#xa;+ school: string&#xa;+ degree: string&#xa;+ field_of_study: string&#xa;+ start_date: date&#xa;+ end_date: date&#xa;+ description: text" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="920" y="60" width="200" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="Experience&#xa;---&#xa;+ id: int&#xa;+ position: string&#xa;+ company_name: string&#xa;+ location: string&#xa;+ start_date: date&#xa;+ end_date: date&#xa;+ description: text" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="1230" y="25" width="200" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="Skill&#xa;---&#xa;+ id: int&#xa;+ name: string" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="1060" y="340" width="200" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="JobOffer&#xa;---&#xa;+ id: int&#xa;+ recruiter_id: int&#xa;+ title: string&#xa;+ description: text&#xa;+ company_name: string&#xa;+ location: string&#xa;+ contract_type: string&#xa;+ image_path: string&#xa;+ status: string" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="690" width="200" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="has" style="startArrow=diamondThin;startFill=1;endArrow=none;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="18">
+                    <mxGeometry width="160" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="22">
+                    <mxGeometry x="-0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="22">
+                    <mxGeometry x="0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="has" style="startArrow=diamondThin;startFill=1;endArrow=none;html=1;exitX=1;exitY=0.1;exitDx=0;exitDy=0;entryX=0;entryY=0.1;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="19">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="26" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="25">
+                    <mxGeometry x="-0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="25">
+                    <mxGeometry x="0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="knows" style="endArrow=none;html=1;exitX=0.9;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="20">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="505" y="340"/>
+                            <mxPoint x="950" y="340"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="29" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="28">
+                    <mxGeometry x="-0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="28">
+                    <mxGeometry x="0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="posts" style="startArrow=diamondThin;startFill=1;endArrow=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="21">
+                    <mxGeometry width="160" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="31">
+                    <mxGeometry x="-0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="31">
+                    <mxGeometry x="0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="Application&#xa;---&#xa;+ id: int&#xa;+ job_offer_id: int&#xa;+ job_seeker_id: int&#xa;+ status: string&#xa;+ message: text" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="320" y="920" width="200" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" value="applies" style="endArrow=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="34">
+                    <mxGeometry width="160" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="36" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="35">
+                    <mxGeometry x="-0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="35">
+                    <mxGeometry x="0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" value="receives" style="endArrow=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="21" target="34">
+                    <mxGeometry width="160" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="38">
+                    <mxGeometry x="-0.8" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="38">
+                    <mxGeometry x="0.8" relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
