@@ -1,0 +1,172 @@
+<mxfile host="65bd71144e">
+    <diagram id="uc_diagram" name="Use Case Diagram">
+        <mxGraphModel dx="1052" dy="662" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="Jolly Jobs Platform" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="220" y="50" width="660" height="1100" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="Oublier mot de passe" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="2" vertex="1">
+                    <mxGeometry x="270" y="80" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Visiteur" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="150" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Candidat" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="540" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="Employeur" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="540" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="Administrateur" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="950" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="S&#39;authentifier" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="280" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="Consulter les offres d&#39;emploi" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="100" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="S&#39;inscrire" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="180" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="3" target="8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="3" target="9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="3" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="«extend»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="10" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="Créer et gérer un profil candidat" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="380" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="Rechercher des offres d&#39;emploi" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="460" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="Postuler à une offre" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="540" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="Suivre les candidatures" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="620" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="Communiquer avec les employeurs" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="700" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="4" target="15" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="4" target="16" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="4" target="17" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="4" target="18" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="4" target="19" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="15" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="17" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="18" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="19" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="Créer et gérer un profil entreprise" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="380" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="Publier une offre d&#39;emploi" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="460" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="Gérer les offres" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="540" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="Gérer les candidatures" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="620" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="Communiquer avec les candidats" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="700" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="5" target="29" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="5" target="30" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="36" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="5" target="31" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="5" target="32" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="5" target="33" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="29" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="30" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="41" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="31" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="32" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="43" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="33" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="44" value="Gérer les utilisateurs" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="800" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="45" value="Modérer les offres d&#39;emploi" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="880" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="46" value="Gérer les données de la plateforme" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="960" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="47" value="Suivi et\nstatistiques" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="1040" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="48" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="6" target="44" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="49" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="6" target="45" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="50" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="6" target="46" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="51" value="" style="endArrow=none;html=1;rounded=0;" parent="1" source="6" target="47" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="52" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="44" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="53" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="45" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="54" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="46" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="55" value="«include»" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" parent="1" source="47" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
