@@ -1,0 +1,87 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap");
+
+@theme {
+  /* Jolly Jobs Colors */
+  --color-jolly-purple: #6366f1;
+  --color-jolly-teal: #14b8a6;
+  --color-jolly-deep-purple: #4338ca;
+  --color-jolly-navy: #1e293b;
+  --color-jolly-slate: #475569;
+
+  --color-bg-gray: #f8fafc;
+  --color-card-white: #ffffff;
+  --color-text-secondary: #64748b;
+
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+
+  /* Typography */
+  --font-heading: "Poppins", sans-serif;
+  --font-body: "Roboto", sans-serif;
+
+  /* Borders & Shadows */
+  --radius-card: 1rem;
+  --radius-button: 0.5rem;
+  --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* Overriding default font families */
+  --font-sans: var(--font-body);
+}
+
+:root {
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #e5e4e7;
+  
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  background-color: var(--bg);
+  
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  max-width: 1126px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 3.5rem;
+  letter-spacing: -0.03em;
+  margin: 2rem 0;
+  @media (max-width: 1024px) {
+    font-size: 2.25rem;
+  }
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin: 0;
+}
