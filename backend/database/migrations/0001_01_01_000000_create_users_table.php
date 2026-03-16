@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->text('bio')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_admin')->default(false);
             $table->timestamp('last_login')->nullable();
             $table->rememberToken();
             $table->timestamps();
