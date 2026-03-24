@@ -25,7 +25,8 @@
   /* Borders & Shadows */
   --radius-card: 1rem;
   --radius-button: 0.5rem;
-  --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-card:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
   /* Overriding default font families */
   --font-sans: var(--font-body);
@@ -36,14 +37,14 @@
   --text-h: #08060d;
   --bg: #fff;
   --border: #e5e4e7;
-  
+
   font-family: var(--font-body);
   font-size: 18px;
   line-height: 1.45;
   letter-spacing: 0.01em;
   color: var(--text);
   background-color: var(--bg);
-  
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -57,12 +58,17 @@ body {
 }
 
 #root {
-  max-width: 1126px;
-  margin: 0 auto;
+  /* max-width: 1126px;
+  margin: 0 auto; */
   min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   color: var(--text-h);
   font-weight: 600;
