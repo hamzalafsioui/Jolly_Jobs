@@ -13,6 +13,16 @@ class StoreJobOfferRequest extends FormRequest
         return true; // Auths are handled by middleware
     }
 
+    // enforce correct value for recruiter_id
+    protected function prepareForValidation()
+    {
+        if ($this->user() && $this->user()->role === 'employer' && $this->user()->recruiter) {
+            $this->merge([
+                'recruiter_id' => $this->user()->recruiter->id,
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
