@@ -28,7 +28,7 @@ class JobOfferPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'employer';
+        return $user->role === 'recruiter';
     }
 
     /**
@@ -40,7 +40,7 @@ class JobOfferPolicy
             return true;
         }
 
-        return $user->role === 'employer' 
+        return $user->role === 'recruiter' 
             && $user->recruiter 
             && $user->recruiter->id === $jobOffer->recruiter_id;
     }
@@ -54,7 +54,7 @@ class JobOfferPolicy
             return true;
         }
 
-        return $user->role === 'employer' 
+        return $user->role === 'recruiter' 
             && $user->recruiter 
             && $user->recruiter->id === $jobOffer->recruiter_id;
     }
