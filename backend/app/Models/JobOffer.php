@@ -11,6 +11,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class JobOffer extends Model
 {
     use HasFactory;
+    public const CONTRACT_TYPES = [
+        'CDI',
+        'CDD',
+        'Freelance',
+        'Internship',
+        'Temporary'
+    ];
 
     protected $fillable = [
         'recruiter_id',
