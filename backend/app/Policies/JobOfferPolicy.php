@@ -58,4 +58,18 @@ class JobOfferPolicy
             && $user->recruiter 
             && $user->recruiter->id === $jobOffer->recruiter_id;
     }
+
+    /**
+     * Determine whether the user can view applications for the model.
+     */
+    public function viewApplications(User $user, JobOffer $jobOffer): bool
+    {
+        if ($user->role === 'admin') {
+            return true;
+        }
+
+        return $user->role === 'recruiter' 
+            && $user->recruiter 
+            && $user->recruiter->id === $jobOffer->recruiter_id;
+    }
 }

@@ -26,11 +26,19 @@ Route::prefix('auth')->group(function () {
 Route::apiResource('users', UserController::class)->middleware('auth:sanctum');
 
 
-
 // Job Offers
 Route::get('job-offers/latest', [JobOfferController::class, 'latest']);
 Route::apiResource('job-offers', JobOfferController::class)->only(['index', 'show']);
 Route::apiResource('job-offers', JobOfferController::class)->except(['index', 'show'])->middleware('auth:sanctum');
+
+// Application Tracking
+Route::prefix('applications')->middleware('auth:sanctum')->group(function () {
+    Route::post('/apply/{jobOfferId?}', [ApplicationController::class, 'apply']);
+    Route::get('/{id}', [ApplicationController::class, 'show']);
+    Route::patch('/{id}/status', [ApplicationController::class, 'updateStatus']);
+    Route::get('/job-seeker/{jobSeekerId}', [ApplicationController::class, 'jobSeekerApplications']);
+    Route::get('/offer/{jobOfferId}', [ApplicationController::class, 'offerApplications']);
+});
 
 Route::get('/test-connection', function () {
     return response()->json([
