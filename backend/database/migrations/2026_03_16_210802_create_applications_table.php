@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('job_seeker_id')->constrained()->onDelete('cascade');
             $table->foreignId('job_offer_id')->constrained()->onDelete('cascade');
-            $table->enum('status', ['sent', 'viewed', 'shortlisted', 'rejected'])->default('sent');
+            $table->enum('status', ['sent', 'viewed', 'shortlisted', 'rejected','accepted'])->default('sent');
             $table->text('cover_letter')->nullable();
             $table->string('cv_path')->nullable();
             $table->timestamp('viewed_at')->nullable();
