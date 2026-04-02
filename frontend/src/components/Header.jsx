@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
-
+import Logo from "./Logo";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,13 +17,8 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
-            <a
-              href="/"
-              className="text-2xl font-heading font-bold text-jolly-navy tracking-tight"
-            >
-              Jolly Jobs
-            </a>
+          <div className="shrink-0 flex items-center">
+            <Logo />
           </div>
 
           {/* Desktop Navigation */}
