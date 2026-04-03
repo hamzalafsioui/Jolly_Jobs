@@ -23,7 +23,10 @@ use App\Repositories\Contracts\EducationRepositoryInterface;
 use App\Repositories\Eloquent\EducationRepository;
 use App\Repositories\Contracts\ExperienceRepositoryInterface;
 use App\Repositories\Eloquent\ExperienceRepository;
-
+use App\Repositories\Contracts\NotificationRepositoryInterface;
+use App\Repositories\Eloquent\NotificationRepository;
+use App\Repositories\Contracts\MessageRepositoryInterface;
+use App\Repositories\Eloquent\MessageRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -42,7 +45,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SkillRepositoryInterface::class, SkillRepository::class);
         $this->app->bind(EducationRepositoryInterface::class, EducationRepository::class);
         $this->app->bind(ExperienceRepositoryInterface::class, ExperienceRepository::class);
-        
+        $this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
+        $this->app->bind(MessageRepositoryInterface::class, MessageRepository::class);
     }
 
     /**
