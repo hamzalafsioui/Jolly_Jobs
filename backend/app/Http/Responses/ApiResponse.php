@@ -55,7 +55,31 @@ class ApiResponse
     }
 
 
-   
+    public static function paginated(
+        mixed $paginated,
+        string $message = 'Data retrieved successfully.'
+    ): JsonResponse {
+        // Handle ResourceCollection & bare paginators
+        if ($paginated instanceof ResourceCollection) {
+            $resource   = $paginated->resource; // underlying paginator
+            $data       = $paginated->resolve(request());
+            $items      = $data['data'] ?? $data;
+        } else {
+            $resource   = $paginated;
+            $items      = $paginated->items();
+        }
+
+        $meta = [
+            'current_page'  => $resource->currentPage(),
+            'per_page'      => $resource->perPage(),
+            'total'         => $resource->total(),
+            'last_page'     => $resource->lastPage(),
+            'from'          => $resource->firstItem(),
+            'to'            => $resource->lastItem(),
+        ];
+
+        return self::buildSuccess($items, $message, $meta, 200);
+    }
 
 
     public static function badRequest(
@@ -86,6 +110,25 @@ class ApiResponse
     }
 
 
+    public static function conflict(
+        string $message = 'Conflict. The resource already exists or is in an incompatible state.',
+        mixed $errors = null
+    ): JsonResponse {
+        return self::buildError($message, $errors, 409);
+    }
+
+    public static function validationError(
+        mixed $errors,
+        string $message = 'Validation failed. Please check the provided data.'
+    ): JsonResponse {
+        
+        if ($errors instanceof MessageBag) {
+            $errors = $errors->toArray();
+        }
+
+        return self::buildError($message, $errors, 422);
+    }
+
 
     public static function tooManyRequests(
         string $message = 'Too many requests. Please slow down and try again later.'
@@ -93,7 +136,25 @@ class ApiResponse
         return self::buildError($message, null, 429);
     }
 
-   
+  
+    public static function serverError(
+        string $message = 'An unexpected error occurred. Please try again later.',
+        mixed $errors = null
+    ): JsonResponse {
+        // Never expose raw exception details in production
+        $debugErrors = app()->isProduction() ? null : $errors;
+
+        return self::buildError($message, $debugErrors, 500);
+    }
+
+    
+    public static function error(
+        string $message,
+        mixed $errors = null,
+        int $statusCode = 400
+    ): JsonResponse {
+        return self::buildError($message, $errors, $statusCode);
+    }
 
    // ============================ Private ===================================
 
@@ -108,7 +169,7 @@ class ApiResponse
     ): JsonResponse {
 
         if ($data instanceof JsonResource) {
-            $data = $data->toArray(request());
+            $data = $data->resolve(request());
         }
 
         $payload = [
