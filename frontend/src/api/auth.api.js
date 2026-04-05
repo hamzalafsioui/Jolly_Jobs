@@ -20,6 +20,11 @@ const authApi = {
     return response.data;
   },
 
+  getMe: async () => {
+    const response = await client.get("/auth/me");
+    return response.data;
+  },
+
   /**
    * Test connection to backend
    */
