@@ -5,7 +5,7 @@ import jobOfferBg from "../assets/job_offer_bg.png";
 
 import Logo from "../components/Logo";
 
-export default function Login({ onBack, onRegisterClick }) {
+export default function Login({ onBack, onRegisterClick, onLoginSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -32,8 +32,12 @@ export default function Login({ onBack, onRegisterClick }) {
         localStorage.setItem("token", data.data.token);
       }
 
-      // Automatically go back to home on success
-      if (onBack) onBack();
+      // Execute success callback if provided | otherwise go back to home
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      } else if (onBack) {
+        onBack();
+      }
     } catch (err) {
       console.error("Login error:", err);
       setError(
