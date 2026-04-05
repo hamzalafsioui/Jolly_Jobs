@@ -34,7 +34,7 @@ export default function Login({ onBack, onRegisterClick, onLoginSuccess }) {
 
       // Execute success callback if provided | otherwise go back to home
       if (onLoginSuccess) {
-        onLoginSuccess();
+        onLoginSuccess(data.data.user);
       } else if (onBack) {
         onBack();
       }
