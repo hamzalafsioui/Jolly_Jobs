@@ -4,7 +4,7 @@ import authApi from "../api/auth.api";
 import jobOfferBg from "../assets/job_offer_bg.png";
 import Logo from "../components/Logo";
 
-export default function Register({ onBack, onLoginClick }) {
+export default function Register({ onBack, onLoginClick, onRegisterSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("job_seeker"); // 'job_seeker' or 'recruiter'
 
@@ -68,7 +68,11 @@ export default function Register({ onBack, onLoginClick }) {
       setSuccess(true);
       // Optional: automatically redirect to login or home after a delay
       setTimeout(() => {
-        if (onBack) onBack();
+        if (onRegisterSuccess) {
+          onRegisterSuccess();
+        } else if (onBack) {
+          onBack();
+        }
       }, 2000);
 
     } catch (err) {
