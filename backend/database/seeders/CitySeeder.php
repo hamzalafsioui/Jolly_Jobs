@@ -15,53 +15,53 @@ class CitySeeder extends Seeder
     {
         //
          DB::table('cities')->insert([
-            [
-                'name' => 'Casablanca',
+             [
+                'name' => 'casablanca',
                 'region' => 'Casablanca-Settat',
                 'country' => 'Morocco',
             ],
             [
-                'name' => 'Rabat',
+                'name' => 'rabat',
                 'region' => 'Rabat-Salé-Kénitra',
                 'country' => 'Morocco',
             ],
             [
-                'name' => 'Marrakech',
+                'name' => 'marrakech',
                 'region' => 'Marrakech-Safi',
                 'country' => 'Morocco',
             ],
             [
-                'name' => 'Fes',
+                'name' => 'fes',
                 'region' => 'Fès-Meknès',
                 'country' => 'Morocco',
             ],
             [
-                'name' => 'Tangier',
+                'name' => 'tangier',
                 'region' => 'Tanger-Tétouan-Al Hoceïma',
                 'country' => 'Morocco',
             ],
             [
-                'name' => 'Agadir',
+                'name' => 'agadir',
                 'region' => 'Souss-Massa',
                 'country' => 'Morocco',
             ],
             [
-                'name' => 'Oujda',
+                'name' => 'oujda',
                 'region' => 'Oriental',
                 'country' => 'Morocco',
             ],
             [
-                'name' => 'Kenitra',
+                'name' => 'kenitra',
                 'region' => 'Rabat-Salé-Kénitra',
                 'country' => 'Morocco',
             ],
             [
-                'name' => 'Tetouan',
+                'name' => 'tetouan',
                 'region' => 'Tanger-Tétouan-Al Hoceïma',
                 'country' => 'Morocco',
             ],
             [
-                'name' => 'Safi',
+                'name' => 'safi',
                 'region' => 'Marrakech-Safi',
                 'country' => 'Morocco',
             ],
