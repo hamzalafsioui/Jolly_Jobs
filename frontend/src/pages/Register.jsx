@@ -66,10 +66,10 @@ export default function Register({ onBack, onLoginClick, onRegisterSuccess }) {
       }
 
       setSuccess(true);
-      // Optional: automatically redirect to login or home after a delay
+      // automatically redirect to login or home after a delay
       setTimeout(() => {
         if (onRegisterSuccess) {
-          onRegisterSuccess();
+          onRegisterSuccess(data.data.user);
         } else if (onBack) {
           onBack();
         }
@@ -77,11 +77,11 @@ export default function Register({ onBack, onLoginClick, onRegisterSuccess }) {
 
     } catch (err) {
       console.error("Registration error:", err);
-      // The backend will throw validation errors grouped by field usually
+      // The backend will throw validation errors grouped by field
       const data = err.response?.data;
       if (data?.errors) {
         // Collect all error messages
-        const messages = Object.values(data.errors).flat().join(" ");
+        const messages = Object.values(data.errors).flat().join(" && ");
         setError(messages);
       } else {
         setError(data?.message || "Registration failed. Please try again.");
