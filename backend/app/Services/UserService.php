@@ -25,7 +25,7 @@ class UserService
             'last_name'  => $data['last_name'],
             'email'      => $data['email'],
             'password' => Hash::make($data['password']),
-            'role'     => $data['role'],      // 'candidate' | 'employer'
+            'role'     => $data['role'],      // 'job_seeker' | 'recruiter'
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
