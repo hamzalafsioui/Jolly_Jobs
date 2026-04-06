@@ -29,6 +29,7 @@ Route::apiResource('users', UserController::class)->middleware('auth:sanctum');
 // Job Offers
 Route::get('job-offers/latest', [JobOfferController::class, 'latest']);
 Route::get('job-offers/contract-types', [JobOfferController::class, 'contractTypes']);
+Route::get('job-offers/job-title-suggestions', [JobOfferController::class, 'jobTitleSuggestions']);
 Route::get('cities', [JobOfferController::class, 'cities']);
 Route::apiResource('job-offers', JobOfferController::class)->only(['index', 'show']);
 Route::apiResource('job-offers', JobOfferController::class)->except(['index', 'show'])->middleware('auth:sanctum');
