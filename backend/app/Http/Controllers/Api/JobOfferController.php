@@ -93,4 +93,9 @@ class JobOfferController extends Controller
         $offers = $this->jobOfferRepository->getLatest($limit);
         return ApiResponse::success(JobOfferResource::collection($offers));
     }
+
+    public function contractTypes(): JsonResponse
+    {
+        return ApiResponse::success(JobOffer::CONTRACT_TYPES);
+    }
 }
