@@ -49,4 +49,9 @@ class JobOfferService
     {
         return $this->jobOfferRepository->search($filters);
     }
+
+    public function getJobTitleSuggestions(string $query): Collection
+    {
+        return $this->jobOfferRepository->getJobTitleSuggestions($query);
+    }
 }
