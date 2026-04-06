@@ -17,4 +17,13 @@ class CityRepository implements CityRepositoryInterface
     {
         return City::find($id);
     }
+
+    public function search(string $query): Collection
+    {
+        if (empty($query)) {
+            return collect();
+        }
+        
+        return City::where('name', 'ILIKE', '%' . $query . '%')->get(['id', 'name']);
+    }
 }

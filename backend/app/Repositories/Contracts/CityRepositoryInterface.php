@@ -9,4 +9,5 @@ interface CityRepositoryInterface
 {
     public function all(): Collection;
     public function findById(int $id): ?City;
+    public function search(string $query): Collection;
 }
