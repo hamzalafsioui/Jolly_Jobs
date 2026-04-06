@@ -62,13 +62,29 @@ class JobOfferRepository implements JobOfferRepositoryInterface
             $query->where('contract_type', $filters['contract_type']);
         }
 
+        if (isset($filters['remote'])) {
+            $query->where('remote', (bool)$filters['remote']);
+        }
+
         if (!empty($filters['keyword'])) {
-            $query->where(function($q) use ($filters) {
-                $q->where('title', 'like', '%' . $filters['keyword'] . '%')
-                  ->orWhere('description', 'like', '%' . $filters['keyword'] . '%');
+            $query->where(function ($q) use ($filters) {
+                $q->where('title', 'ILIKE', '%' . $filters['keyword'] . '%')
+                    ->orWhere('description', 'ILIKE', '%' . $filters['keyword'] . '%');
             });
         }
 
         return $query->latest()->get();
+    }
+
+    public function getJobTitleSuggestions(string $query): Collection
+    {
+        if (empty($query)) {
+            return collect();
+        }
+
+        return JobOffer::where('title', 'ILIKE', '%' . $query . '%')
+            ->distinct()
+            ->orderBy('title')
+            ->pluck('title');
     }
 }

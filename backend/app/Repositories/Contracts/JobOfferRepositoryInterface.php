@@ -14,4 +14,5 @@ interface JobOfferRepositoryInterface
     public function delete(int $id): bool;
     public function getLatest(int $limit = 10): Collection;
     public function search(array $filters): Collection;
+    public function getJobTitleSuggestions(string $query): Collection;
 }
