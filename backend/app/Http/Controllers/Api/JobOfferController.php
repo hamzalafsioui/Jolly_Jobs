@@ -8,6 +8,7 @@ use App\Http\Requests\JobOffer\UpdateJobOfferRequest;
 use App\Http\Resources\JobOfferResource;
 use App\Http\Responses\ApiResponse;
 use App\Repositories\Contracts\JobOfferRepositoryInterface;
+use App\Services\CityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\JobOffer;
@@ -15,7 +16,8 @@ use App\Models\JobOffer;
 class JobOfferController extends Controller
 {
     public function __construct(
-        private readonly JobOfferRepositoryInterface $jobOfferRepository
+        private readonly JobOfferRepositoryInterface $jobOfferRepository,
+        private readonly CityService $cityService
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -98,4 +100,14 @@ class JobOfferController extends Controller
     {
         return ApiResponse::success(JobOffer::CONTRACT_TYPES);
     }
+
+    public function cities(Request $request): JsonResponse
+    {
+        $query = $request->get('query', '');
+        $cities = $this->cityService->searchCities($query);
+
+        return ApiResponse::success($cities);
+    }
+
+   
 }
