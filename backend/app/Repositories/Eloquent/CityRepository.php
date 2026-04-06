@@ -21,7 +21,7 @@ class CityRepository implements CityRepositoryInterface
     public function search(string $query): Collection
     {
         if (empty($query)) {
-            return collect();
+            return $this->all();
         }
         
         return City::where('name', 'ILIKE', '%' . $query . '%')->get(['id', 'name']);
