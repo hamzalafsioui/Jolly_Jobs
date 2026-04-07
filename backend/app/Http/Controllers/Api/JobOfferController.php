@@ -103,11 +103,17 @@ class JobOfferController extends Controller
 
     public function cities(Request $request): JsonResponse
     {
-        $query = $request->get('query', '');
+        $query = (string) $request->get('query', '');
         $cities = $this->cityService->searchCities($query);
 
         return ApiResponse::success($cities);
     }
 
-   
+    public function jobTitleSuggestions(Request $request): JsonResponse
+    {
+        $query = $request->get('query', '');
+        $suggestions = $this->jobOfferRepository->getJobTitleSuggestions($query);
+
+        return ApiResponse::success($suggestions);
+    }
 }
