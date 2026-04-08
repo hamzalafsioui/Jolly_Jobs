@@ -5,12 +5,13 @@ namespace App\Repositories\Eloquent;
 use App\Models\JobOffer;
 use App\Repositories\Contracts\JobOfferRepositoryInterface;
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class JobOfferRepository implements JobOfferRepositoryInterface
 {
-    public function all(): Collection
+    public function all(int $perPage = 15): LengthAwarePaginator
     {
-        return JobOffer::with(['recruiter', 'category', 'city', 'skills'])->get();
+        return JobOffer::with(['recruiter', 'category', 'city', 'skills'])->latest()->paginate($perPage);
     }
 
     public function findById(int $id): ?JobOffer
@@ -46,7 +47,7 @@ class JobOfferRepository implements JobOfferRepositoryInterface
             ->get();
     }
 
-    public function search(array $filters): Collection
+    public function search(array $filters, int $perPage = 15): LengthAwarePaginator
     {
         $query = JobOffer::query()->with(['recruiter', 'category', 'city']);
 
@@ -73,7 +74,7 @@ class JobOfferRepository implements JobOfferRepositoryInterface
             });
         }
 
-        return $query->latest()->get();
+        return $query->latest()->paginate($perPage);
     }
 
     public function getJobTitleSuggestions(string $query): Collection
