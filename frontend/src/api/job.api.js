@@ -18,6 +18,19 @@ const jobApi = {
   },
 
   /**
+   * Get job title suggestions based on query
+   */
+  getJobTitleSuggestions: async (query = "") => {
+    try {
+      const response = await client.get(`/job-offers/job-title-suggestions?query=${query}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching job title suggestions:", error);
+      throw error;
+    }
+  },
+
+  /**
    * Get cities matching a query
    */
   getCities: async (query = "") => {
@@ -42,6 +55,21 @@ const jobApi = {
       throw error;
     }
   },
+
+  /**
+   * Search for job offers based on filters
+   */
+  search: async (filters = {}) => {
+    try {
+      const response = await client.get("/job-offers", { params: filters });
+      return response.data;
+    } catch (error) {
+      console.error("Error searching jobs:", error);
+      throw error;
+    }
+  },
+
+  
 };
 
 export default jobApi;
