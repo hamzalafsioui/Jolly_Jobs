@@ -22,13 +22,14 @@ class JobOfferController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $perPage = $request->get('limit', 15);
         if ($request->hasAny(['category_id', 'city_id', 'contract_type', 'keyword'])) {
-            $offers = $this->jobOfferRepository->search($request->all());
+            $offers = $this->jobOfferRepository->search($request->all(), $perPage);
         } else {
-            $offers = $this->jobOfferRepository->all();
+            $offers = $this->jobOfferRepository->all($perPage);
         }
         
-        return ApiResponse::success(JobOfferResource::collection($offers));
+        return ApiResponse::paginated(JobOfferResource::collection($offers));
     }
 
     public function show($id): JsonResponse
