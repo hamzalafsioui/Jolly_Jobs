@@ -69,7 +69,18 @@ const jobApi = {
     }
   },
 
-  
+  /**
+   * Get specific job offer details
+   */
+  getOfferDetails: async (id) => {
+    try {
+      const response = await client.get(`/job-offers/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching job details:", error);
+      throw error;
+    }
+  },
 };
 
 export default jobApi;
