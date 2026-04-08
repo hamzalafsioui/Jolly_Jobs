@@ -20,7 +20,7 @@ class ApplicationResource extends JsonResource
             'created_at'     => $this->created_at?->toISOString(),
             'updated_at'     => $this->updated_at?->toISOString(),
             'job_seeker'     => new UserResource($this->whenLoaded('jobSeeker')),
-             
+            // 'job_offer'      => new JobOfferResource($this->whenLoaded('jobOffer')), 
         ];
     }
 }
