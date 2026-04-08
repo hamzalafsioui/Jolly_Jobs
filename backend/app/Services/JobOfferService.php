@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\Contracts\JobOfferRepositoryInterface;
 use App\Models\JobOffer;
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class JobOfferService
 {
@@ -15,9 +16,9 @@ class JobOfferService
         $this->jobOfferRepository = $jobOfferRepository;
     }
 
-    public function getAllOffers(): Collection
+    public function getAllOffers(int $perPage = 15): LengthAwarePaginator
     {
-        return $this->jobOfferRepository->all();
+        return $this->jobOfferRepository->all($perPage);
     }
 
     public function getOfferDetails(int $id): ?JobOffer
@@ -45,9 +46,9 @@ class JobOfferService
         return $this->jobOfferRepository->getLatest($limit);
     }
 
-    public function searchOffers(array $filters): Collection
+    public function searchOffers(array $filters, int $perPage = 15): LengthAwarePaginator
     {
-        return $this->jobOfferRepository->search($filters);
+        return $this->jobOfferRepository->search($filters, $perPage);
     }
 
     public function getJobTitleSuggestions(string $query): Collection
