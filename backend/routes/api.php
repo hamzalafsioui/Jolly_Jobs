@@ -27,6 +27,8 @@ Route::apiResource('users', UserController::class)->middleware('auth:sanctum');
 
 
 // Job Offers
+Route::get('user/saved-jobs', [JobOfferController::class, 'savedJobs'])->middleware('auth:sanctum');
+Route::post('job-offers/{id}/save', [JobOfferController::class, 'toggleSave'])->middleware('auth:sanctum');
 Route::get('job-offers/latest', [JobOfferController::class, 'latest']);
 Route::get('job-offers/contract-types', [JobOfferController::class, 'contractTypes']);
 Route::get('job-offers/job-title-suggestions', [JobOfferController::class, 'jobTitleSuggestions']);
