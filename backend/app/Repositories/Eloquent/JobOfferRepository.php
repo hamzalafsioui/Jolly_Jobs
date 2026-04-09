@@ -88,4 +88,21 @@ class JobOfferRepository implements JobOfferRepositoryInterface
             ->orderBy('title')
             ->pluck('title');
     }
+
+    public function toggleSave(int $jobId, int $jobSeekerId): array
+    {
+        $jobOffer = JobOffer::find($jobId);
+        if (!$jobOffer) {
+            return ['status' => 'not_found'];
+        }
+
+        $result = $jobOffer->savedByJobSeekers()->toggle([$jobSeekerId]);
+
+        return [
+            'status' => 'success',
+            'attached' => !empty($result['attached'])
+        ];
+    }
+
+    
 }
