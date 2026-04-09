@@ -95,7 +95,18 @@ const jobApi = {
     }
   },
 
- 
+  /**
+   * Get all saved jobs for current user
+   */
+  getSavedJobs: async (page = 1, limit = 15) => {
+    try {
+      const response = await client.get(`/user/saved-jobs?page=${page}&limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching saved jobs:", error);
+      throw error;
+    }
+  },
 };
 
 export default jobApi;
