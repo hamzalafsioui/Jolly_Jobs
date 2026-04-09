@@ -17,4 +17,5 @@ interface JobOfferRepositoryInterface
     public function search(array $filters, int $perPage = 15): LengthAwarePaginator;
     public function getJobTitleSuggestions(string $query): Collection;
     public function toggleSave(int $jobId, int $jobSeekerId): array;
+    public function getSavedJobs(int $jobSeekerId, int $perPage = 15): LengthAwarePaginator;
 }

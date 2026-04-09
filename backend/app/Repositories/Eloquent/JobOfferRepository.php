@@ -104,5 +104,13 @@ class JobOfferRepository implements JobOfferRepositoryInterface
         ];
     }
 
-    
+    public function getSavedJobs(int $jobSeekerId, int $perPage = 15): LengthAwarePaginator
+    {
+        return JobOffer::with(['recruiter', 'category', 'city'])
+            ->whereHas('savedByJobSeekers', function ($query) use ($jobSeekerId) {
+                $query->where('job_seeker_id', $jobSeekerId);
+            })
+            ->latest()
+            ->paginate($perPage);
+    }
 }
