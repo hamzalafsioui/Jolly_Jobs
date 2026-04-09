@@ -81,6 +81,21 @@ const jobApi = {
       throw error;
     }
   },
+
+  /**
+   * Toggle save state for a job offer
+   */
+  toggleSave: async (id) => {
+    try {
+      const response = await client.post(`/job-offers/${id}/save`);
+      return response.data;
+    } catch (error) {
+      console.error("Error toggling saved job:", error);
+      throw error;
+    }
+  },
+
+ 
 };
 
 export default jobApi;
