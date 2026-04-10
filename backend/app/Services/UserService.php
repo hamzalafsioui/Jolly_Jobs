@@ -4,13 +4,17 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Repositories\Contracts\JobSeekerRepositoryInterface;
+use App\Repositories\Contracts\RecruiterRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class UserService
 {
     public function __construct(
-        private readonly UserRepositoryInterface $userRepository
+        private readonly UserRepositoryInterface $userRepository,
+        private readonly JobSeekerRepositoryInterface $jobSeekerRepository,
+        private readonly RecruiterRepositoryInterface $recruiterRepository
     ) {}
 
     /**
@@ -27,6 +31,15 @@ class UserService
             'password' => Hash::make($data['password']),
             'role'     => $data['role'],      // 'job_seeker' | 'recruiter'
         ]);
+
+        if ($data['role'] === 'job_seeker') {
+            $this->jobSeekerRepository->create(['user_id' => $user->id]);
+        } elseif ($data['role'] === 'recruiter') {
+            $this->recruiterRepository->create([
+                'user_id' => $user->id,
+                'company_name' => $data['first_name'] . "'s Company", // Fallback
+            ]);
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
