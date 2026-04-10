@@ -97,6 +97,44 @@ class JobOfferController extends Controller
         return ApiResponse::success(JobOfferResource::collection($offers));
     }
 
+    public function toggleSave(Request $request, $id): JsonResponse
+    {
+        $user = $request->user();
+        if ($user->role !== 'job_seeker') {
+            return ApiResponse::forbidden('Only job seekers can save job offers.');
+        }
+
+        if (!$user->jobSeeker) {
+            return ApiResponse::forbidden('Your account is missing a job seeker profile. Please contact support.');
+        }
+
+        $result = $this->jobOfferRepository->toggleSave($id, $user->jobSeeker->id);
+
+        if ($result['status'] === 'not_found') {
+            return ApiResponse::notFound('Job offer not found.');
+        }
+
+        $message = $result['attached'] ? 'Job offer saved successfully.' : 'Job offer removed from saved list.';
+        return ApiResponse::success(['is_saved' => $result['attached']], $message);
+    }
+
+    public function savedJobs(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        if ($user->role !== 'job_seeker') {
+            return ApiResponse::forbidden('Only job seekers have saved jobs.');
+        }
+
+        if (!$user->jobSeeker) {
+            return ApiResponse::forbidden('Your account is missing a job seeker profile.');
+        }
+
+        $perPage = $request->get('limit', 15);
+        $offers = $this->jobOfferRepository->getSavedJobs($user->jobSeeker->id, $perPage);
+
+        return ApiResponse::paginated(JobOfferResource::collection($offers));
+    }
+
     public function contractTypes(): JsonResponse
     {
         return ApiResponse::success(JobOffer::CONTRACT_TYPES);
