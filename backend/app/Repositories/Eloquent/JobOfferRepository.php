@@ -63,8 +63,8 @@ class JobOfferRepository implements JobOfferRepositoryInterface
             $query->where('contract_type', $filters['contract_type']);
         }
 
-        if (isset($filters['remote'])) {
-            $query->where('remote', (bool)$filters['remote']);
+        if (!empty($filters['remote']) && filter_var($filters['remote'], FILTER_VALIDATE_BOOLEAN)) {
+            $query->where('remote', true);
         }
 
         if (!empty($filters['keyword'])) {
