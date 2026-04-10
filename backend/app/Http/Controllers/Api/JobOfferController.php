@@ -23,7 +23,7 @@ class JobOfferController extends Controller
     public function index(Request $request): JsonResponse
     {
         $perPage = $request->get('limit', 15);
-        if ($request->hasAny(['category_id', 'city_id', 'contract_type', 'keyword'])) {
+        if ($request->hasAny(['category_id', 'city_id', 'contract_type', 'keyword', 'remote'])) {
             $offers = $this->jobOfferRepository->search($request->all(), $perPage);
         } else {
             $offers = $this->jobOfferRepository->all($perPage);
