@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\JobOfferController;
+use App\Http\Controllers\Api\RecruiterDashboardController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -43,6 +44,11 @@ Route::prefix('applications')->middleware('auth:sanctum')->group(function () {
     Route::patch('/{id}/status', [ApplicationController::class, 'updateStatus']);
     Route::get('/job-seeker/{jobSeekerId}', [ApplicationController::class, 'jobSeekerApplications']);
     Route::get('/offer/{jobOfferId}', [ApplicationController::class, 'offerApplications']);
+});
+
+// Recruiter Dashboard
+Route::prefix('recruiter')->middleware('auth:sanctum')->group(function () {
+    Route::get('/dashboard', [RecruiterDashboardController::class, 'getStats']);
 });
 
 Route::get('/test-connection', function () {
