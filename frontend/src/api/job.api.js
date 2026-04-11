@@ -107,6 +107,19 @@ const jobApi = {
       throw error;
     }
   },
+
+  /**
+   * Apply for a job offer
+   */
+  apply: async (jobId, data = {}) => {
+    try {
+      const response = await client.post(`/applications/apply/${jobId}`, data);
+      return response.data;
+    } catch (error) {
+      console.error("Error applying for job:", error);
+      throw error;
+    }
+  },
 };
 
 export default jobApi;
