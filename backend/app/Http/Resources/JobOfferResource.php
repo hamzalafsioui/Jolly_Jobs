@@ -41,6 +41,9 @@ class JobOfferResource extends JsonResource
             'is_saved'           => $this->when($request->user() && $request->user()->jobSeeker, function() use ($request) {
                 return $request->user()->jobSeeker->savedJobs()->where('job_offer_id', $this->id)->exists();
             }),
+            'is_applied'         => $this->when($request->user() && $request->user()->jobSeeker, function() use ($request) {
+                return $request->user()->jobSeeker->applications()->where('job_offer_id', $this->id)->exists();
+            }),
             'created_at'         => $this->created_at?->toISOString(),
             'updated_at'         => $this->updated_at?->toISOString(),
         ];
