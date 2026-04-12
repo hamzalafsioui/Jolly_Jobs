@@ -16,6 +16,9 @@ class UserResource extends JsonResource
             'full_name'  => $this->first_name . ' ' . $this->last_name,
             'email'      => $this->email,
             'role'       => $this->role,
+            'city_id'    => $this->city_id,
+            'recruiter'  => $this->when($this->role === 'recruiter', $this->recruiter),
+            'job_seeker' => $this->when($this->role === 'job_seeker', $this->jobSeeker),
             'created_at' => $this->created_at?->toISOString(),
         ];
     }
