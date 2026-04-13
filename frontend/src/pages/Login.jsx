@@ -49,7 +49,7 @@ export default function Login({ onBack, onRegisterClick, onLoginSuccess }) {
   };
 
   return (
-    <div className="min-h-screen flex bg-white font-body">
+    <div className="h-screen flex bg-white font-body overflow-hidden">
       {/* Left Panel - Branding & Image */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#00ff41] p-12 flex-col justify-between text-white relative overflow-hidden">
         {/* Logo */}
@@ -64,25 +64,25 @@ export default function Login({ onBack, onRegisterClick, onLoginSuccess }) {
         </div>
 
         {/* Center Content */}
-        <div className="flex flex-col items-center justify-center grow z-10 w-full max-w-lg mx-auto mt-8">
+        <div className="flex flex-col items-center justify-center grow z-10 w-full max-w-lg mx-auto">
+          <h2 className="text-[2rem] lg:text-[3.25rem] font-heading font-bold text-center leading-[1.1] mb-6 text-white tracking-tight">
+            Find your next tech
+            <br />
+            adventure
+          </h2>
+          <p className="text-white/90 text-center text-[17px] leading-relaxed px-2 font-medium mb-10">
+            Join thousands of developers and designers finding meaningful roles
+            at the world's most innovative tech companies.
+          </p>
+
           {/* Image Container */}
-          <div className="w-full max-w-sm mb-10 flex justify-center">
+          <div className="w-full max-w-[280px] mb-6 flex justify-center text-center">
             <img
               src={jobOfferBg}
               alt="Job offer background"
               className="w-full h-auto object-contain drop-shadow-lg"
             />
           </div>
-
-          <h2 className="text-[3.25rem] font-heading font-bold text-center leading-[1.1] mb-6 text-white tracking-tight">
-            Find your next tech
-            <br />
-            adventure
-          </h2>
-          <p className="text-white/90 text-center text-[17px] leading-relaxed px-2 font-medium">
-            Join thousands of developers and designers finding meaningful roles
-            at the world's most innovative tech companies.
-          </p>
         </div>
 
         {/* Footer */}
@@ -92,7 +92,7 @@ export default function Login({ onBack, onRegisterClick, onLoginSuccess }) {
       </div>
 
       {/* Right Panel - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16 relative">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16 relative overflow-y-auto">
         <div className="w-full max-w-[440px] space-y-8">
           {/* Header */}
           <div>

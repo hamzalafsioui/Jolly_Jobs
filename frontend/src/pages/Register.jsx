@@ -92,7 +92,7 @@ export default function Register({ onBack, onLoginClick, onRegisterSuccess }) {
   };
 
   return (
-    <div className="min-h-screen flex bg-white font-body">
+    <div className="h-screen flex bg-white font-body overflow-hidden">
       {/* Left Panel | Branding & Image */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#00ff41] p-12 flex-col justify-between text-white relative overflow-hidden">
         {/* Logo */}
@@ -107,7 +107,7 @@ export default function Register({ onBack, onLoginClick, onRegisterSuccess }) {
         </div>
 
         {/* Center Content */}
-        <div className="flex flex-col items-center justify-start pt-16 lg:pt-24 grow z-10 w-full max-w-lg mx-auto mt-2">
+        <div className="flex flex-col items-center justify-start pt-8 lg:pt-12 grow z-10 w-full max-w-lg mx-auto mt-2">
           <h2 className="text-[3.25rem] font-heading font-bold text-center leading-[1.1] mb-6 text-white tracking-tight">
             Your next big<br />career<br />move starts right<br />here.
           </h2>
@@ -117,7 +117,7 @@ export default function Register({ onBack, onLoginClick, onRegisterSuccess }) {
           </p>
 
           {/* Image Container */}
-          <div className="w-full max-w-sm mb-10 flex justify-center">
+          <div className="w-full max-w-[280px] mb-6 flex justify-center">
             <img
               src={jobOfferBg}
               alt="Job offer background"
@@ -133,7 +133,7 @@ export default function Register({ onBack, onLoginClick, onRegisterSuccess }) {
       </div>
 
       {/* Right Panel | Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16 relative">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16 relative overflow-y-auto">
         <div className="w-full max-w-[480px] space-y-8 my-auto">
           {/* Header */}
           <div>
