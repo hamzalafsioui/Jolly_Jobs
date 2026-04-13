@@ -1,6 +1,6 @@
-import { MapPin } from "lucide-react";
+import { MapPin, Zap } from "lucide-react";
 
-export default function JobCard({ job }) {
+export default function JobCard({ job, onClick }) {
   const formatTypeBadge = (type) => {
     if (type === "Full-time") {
       return "bg-jolly-teal/10 text-jolly-teal";
@@ -11,66 +11,69 @@ export default function JobCard({ job }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 flex flex-col h-full border border-transparent shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] transition-all cursor-pointer hover:border-jolly-purple/20 hover:-translate-y-1">
-      <div className="flex justify-between items-start mb-5">
+    <div 
+      onClick={onClick}
+      className="bg-white rounded-2xl p-6 flex flex-col h-full border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] transition-all cursor-pointer hover:border-jolly-purple/20 group relative overflow-hidden"
+    >
+      {/* "NEW" Badge */}
+      {job.isNew && (
+        <div className="absolute top-4 right-4 animate-pulse">
+           <span className="px-2 py-0.5 rounded-md bg-success/10 text-success text-[10px] font-bold tracking-wider">
+             NEW
+           </span>
+        </div>
+      )}
+
+      <div className="flex items-start mb-5">
         <div
-          className={`w-12 h-12 rounded-xl flex items-center justify-center ${job.logoColor}`}
+          className={`w-12 h-12 rounded-xl flex items-center justify-center ${job.logoColor} shadow-inner shadow-black/5`}
         >
-          <div className="w-5 h-5 opacity-60 flex items-center justify-center">
-            {/* logo placeholder */}
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              className="w-full h-full stroke-current text-white/80"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
-              <path d="M2 12h20"></path>
-            </svg>
+          <div className="w-6 h-6 flex items-center justify-center text-white/90">
+             {job.logo || <Zap size={20} />}
           </div>
         </div>
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-bold font-body ${formatTypeBadge(job.type)}`}
-        >
-          {job.type}
-        </span>
+        <div className="ml-4">
+           <h3 className="font-heading font-bold text-jolly-navy text-base mb-0.5 leading-tight group-hover:text-jolly-purple transition-colors">
+            {job.title}
+          </h3>
+          <p className="text-xs text-jolly-slate font-medium font-body">
+            {job.company}
+          </p>
+        </div>
       </div>
 
-      <h3 className="font-heading font-bold text-jolly-navy text-lg mb-1 leading-tight line-clamp-1">
-        {job.title}
-      </h3>
-      <p className="text-sm text-text-secondary font-body mb-5">
-        {job.company}
-      </p>
+      <div className="flex items-center space-x-4 mb-6">
+        <div className="flex items-center text-jolly-slate text-[13px] font-body bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+          <MapPin size={12} className="mr-1.5 text-jolly-purple" />
+          {job.location}
+        </div>
+        <div className="text-jolly-navy font-bold text-[13px] font-body">
+           {job.salary}
+        </div>
+      </div>
 
       <div className="flex flex-wrap gap-2 mb-6">
         {job.tags.map((tag, idx) => (
           <span
             key={idx}
-            className="bg-gray-100 text-jolly-slate text-xs px-2.5 py-1 rounded font-medium font-body bg-opacity-70"
+            className="bg-gray-100 text-jolly-slate text-[11px] px-2.5 py-1 rounded-full font-medium font-body transition-colors hover:bg-jolly-purple/5 hover:text-jolly-purple"
           >
             {tag}
           </span>
         ))}
       </div>
 
-      <div className="mt-auto flex items-end justify-between pt-2">
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center text-text-secondary text-[13px] font-body">
-            <MapPin size={14} className="mr-1.5 stroke-[2.5]" />
-            {job.location}
-          </div>
-          <span className="font-heading font-bold text-jolly-navy text-base">
-            {job.salary}
-          </span>
-        </div>
-        <button className="text-jolly-purple font-bold text-sm font-heading hover:text-jolly-deep-purple transition-colors mb-0.5">
-          Apply
+      <div className="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between">
+         <span
+          className={`px-3 py-1 rounded-full text-[11px] font-bold font-body ${formatTypeBadge(job.type)}`}
+        >
+          {job.type}
+        </span>
+        <button className="text-jolly-purple font-bold text-[13px] font-heading hover:underline underline-offset-4 transition-all">
+          View Details
         </button>
       </div>
     </div>
   );
 }
+
