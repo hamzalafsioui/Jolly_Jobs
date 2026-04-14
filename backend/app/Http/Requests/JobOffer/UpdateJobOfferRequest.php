@@ -28,6 +28,8 @@ class UpdateJobOfferRequest extends FormRequest
             'experience_level'  => ['sometimes', 'string', 'max:255'],
             'status'            => ['sometimes', Rule::in(['active', 'closed', 'draft', 'expired'])],
             'image_path'        => ['nullable', 'string', 'max:255'],
+            'skills'            => ['nullable', 'array'],
+            'skills.*'          => ['string', 'max:255'],
         ];
     }
 }

@@ -52,4 +52,14 @@ class ApplicationRepository implements ApplicationRepositoryInterface
             ->latest()
             ->get();
     }
+
+    public function findByRecruiter(int $recruiterId): Collection
+    {
+        return Application::whereHas('jobOffer', function ($query) use ($recruiterId) {
+                $query->where('recruiter_id', $recruiterId);
+            })
+            ->with(['jobSeeker.user', 'jobOffer'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
 }

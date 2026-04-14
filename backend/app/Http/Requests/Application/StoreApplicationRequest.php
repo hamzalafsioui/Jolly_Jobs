@@ -22,10 +22,18 @@ class StoreApplicationRequest extends FormRequest
 
     protected function prepareForValidation()
     {
+        $merges = [];
+
         if ($this->route('jobOfferId')) {
-            $this->merge([
-                'job_offer_id' => $this->route('jobOfferId'),
-            ]);
+            $merges['job_offer_id'] = $this->route('jobOfferId');
+        }
+
+        if (!$this->has('cv_path') && $this->user() && $this->user()->jobSeeker) {
+            $merges['cv_path'] = $this->user()->jobSeeker->cv_path;
+        }
+
+        if (!empty($merges)) {
+            $this->merge($merges);
         }
     }
 }

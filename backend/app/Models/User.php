@@ -26,6 +26,9 @@ class User extends Authenticatable
         'password',
         'role',
         'city_id',
+        'phone',
+        'photo',
+        'bio',
     ];
 
     public function city()

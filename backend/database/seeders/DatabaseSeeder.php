@@ -19,10 +19,11 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call([
-            CitySeeder::class,
             CategorySeeder::class,
+            CitySeeder::class,
             RecruiterSeeder::class,
             JobSeekerSeeder::class,
+            JobOfferSeeder::class,
         ]);
 
         User::factory()->create([
