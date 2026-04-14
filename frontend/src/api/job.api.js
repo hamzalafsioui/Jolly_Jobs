@@ -18,6 +18,32 @@ const jobApi = {
   },
 
   /**
+   * Get all available skills
+   */
+  getSkills: async () => {
+    try {
+      const response = await client.get("/skills");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching skills:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get all available categories
+   */
+  getCategories: async () => {
+    try {
+      const response = await client.get("/categories");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      throw error;
+    }
+  },
+
+  /**
    * Get job title suggestions based on query
    */
   getJobTitleSuggestions: async (query = "") => {
