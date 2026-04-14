@@ -46,7 +46,7 @@ class UpdateProfileRequest extends FormRequest
             // Job Seeker Specific Info
             'specialty' => ['sometimes', 'nullable', 'string', 'max:255'],
             'experience_level' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'cv' => ['sometimes', 'nullable', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            'cv' => ['sometimes', 'nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
             'skills' => ['sometimes', 'nullable', 'array'],
             'skills.*' => ['exists:skills,id'],
         ];
