@@ -14,4 +14,5 @@ interface ApplicationRepositoryInterface
     public function delete(int $id): bool;
     public function findByJobSeeker(int $jobSeekerId): Collection;
     public function findByJobOffer(int $jobOfferId): Collection;
+    public function findByRecruiter(int $recruiterId): Collection;
 }
