@@ -16,7 +16,7 @@ class StoreJobOfferRequest extends FormRequest
     // enforce correct value for recruiter_id
     protected function prepareForValidation()
     {
-        if ($this->user() && $this->user()->role === 'employer' && $this->user()->recruiter) {
+        if ($this->user() && $this->user()->role === 'recruiter' && $this->user()->recruiter) {
             $this->merge([
                 'recruiter_id' => $this->user()->recruiter->id,
             ]);
@@ -40,6 +40,8 @@ class StoreJobOfferRequest extends FormRequest
             'remote'            => ['boolean'],
             'experience_level'  => ['required', 'string', 'max:255'],
             'image_path'        => ['nullable', 'string', 'max:255'],
+            'skills'            => ['nullable', 'array'],
+            'skills.*'          => ['string', 'max:255'],
         ];
     }
 }
