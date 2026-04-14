@@ -47,6 +47,8 @@ class UpdateProfileRequest extends FormRequest
             'specialty' => ['sometimes', 'nullable', 'string', 'max:255'],
             'experience_level' => ['sometimes', 'nullable', 'string', 'max:255'],
             'cv' => ['sometimes', 'nullable', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            'skills' => ['sometimes', 'nullable', 'array'],
+            'skills.*' => ['exists:skills,id'],
         ];
     }
 }

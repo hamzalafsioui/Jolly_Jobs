@@ -29,7 +29,7 @@ class ProfileService
         if ($user->role === 'recruiter') {
             $userData->load('recruiter');
         } elseif ($user->role === 'job_seeker') {
-            $userData->load('jobSeeker');
+            $userData->load('jobSeeker.skills');
         }
 
         return $userData;
@@ -124,5 +124,9 @@ class ProfileService
         }
 
         $this->jobSeekerRepository->update($jobSeeker->id, $jobSeekerData);
+
+        if (isset($data['skills'])) {
+            $jobSeeker->skills()->sync($data['skills']);
+        }
     }
 }
