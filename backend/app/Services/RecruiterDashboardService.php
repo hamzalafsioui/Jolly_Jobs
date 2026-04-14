@@ -90,4 +90,26 @@ class RecruiterDashboardService
             'top_jobs' => $topJobs,
         ];
     }
+
+    public function getMyJobs(int $userId)
+    {
+        $recruiter = $this->recruiterRepository->findByUserId($userId);
+
+        if (!$recruiter) {
+            throw new Exception('Recruiter profile not found.');
+        }
+
+        return $this->jobOfferRepository->findByRecruiter($recruiter->id);
+    }
+
+    public function getMyApplications(int $userId)
+    {
+        $recruiter = $this->recruiterRepository->findByUserId($userId);
+
+        if (!$recruiter) {
+            throw new Exception('Recruiter profile not found.');
+        }
+
+        return $this->applicationRepository->findByRecruiter($recruiter->id);
+    }
 }
