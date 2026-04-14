@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\JobOfferController;
 use App\Http\Controllers\Api\RecruiterDashboardController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\SkillController;
+use App\Http\Controllers\Api\CategoryController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -53,6 +55,8 @@ Route::prefix('applications')->middleware('auth:sanctum')->group(function () {
 // Recruiter Dashboard
 Route::prefix('recruiter')->middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [RecruiterDashboardController::class, 'getStats']);
+    Route::get('/jobs', [RecruiterDashboardController::class, 'myJobs']);
+    Route::get('/applications', [RecruiterDashboardController::class, 'myApplications']);
 });
 
 Route::get('/test-connection', function () {
@@ -62,3 +66,6 @@ Route::get('/test-connection', function () {
         'database' => DB::connection()->getDatabaseName()
     ]);
 });
+
+Route::get('skills', [SkillController::class, 'index']);
+Route::get('categories', [CategoryController::class, 'index']);
