@@ -50,7 +50,7 @@ class ProfileService
             }
 
             // Handle photo upload
-            if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
+            if (isset($data['photo']) && $data['photo'] instanceof UploadedFile && $data['photo']->isValid()) {
                 // Delete old photo if exists
                 if ($user->photo) {
                     Storage::disk('public')->delete($user->photo);
@@ -88,7 +88,7 @@ class ProfileService
         $recruiterData = array_intersect_key($data, array_flip($recruiterFields));
 
         // Handle logo upload
-        if (isset($data['logo']) && $data['logo'] instanceof UploadedFile) {
+        if (isset($data['logo']) && $data['logo'] instanceof UploadedFile && $data['logo']->isValid()) {
             // Delete old logo if exists
             if ($recruiter->logo) {
                 Storage::disk('public')->delete($recruiter->logo);
@@ -114,7 +114,7 @@ class ProfileService
         $jobSeekerData = array_intersect_key($data, array_flip($jobSeekerFields));
 
         // Handle CV upload
-        if (isset($data['cv']) && $data['cv'] instanceof UploadedFile) {
+        if (isset($data['cv']) && $data['cv'] instanceof UploadedFile && $data['cv']->isValid()) {
             // Delete old CV if exists
             if ($jobSeeker->cv_path) {
                 Storage::disk('public')->delete($jobSeeker->cv_path);
