@@ -42,7 +42,7 @@ const HowItWorks = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
           {/* steps */}
-          {steps.map((step, index) => (
+          {steps.map((step) => (
             <div
               key={step.id}
               className="group flex flex-col items-center text-center transition-all duration-500 hover:-translate-y-2"
@@ -50,7 +50,7 @@ const HowItWorks = () => {
               <div
                 className={`
                 relative mb-8 w-16 h-16 ${step.color} ${step.shadow} 
-                rounded-2xl flex items-center justify-center text-white text-2xl font-bold 
+                rounded-2xl flex items-center justify-center text-white text-2xl font-bold
                 shadow-xl group-hover:scale-110 transition-transform duration-500
               `}
               >
