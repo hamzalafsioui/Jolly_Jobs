@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\RecruiterDashboardController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SkillController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\AdminDashboardController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -50,6 +52,12 @@ Route::prefix('applications')->middleware('auth:sanctum')->group(function () {
     Route::patch('/{id}/status', [ApplicationController::class, 'updateStatus']);
     Route::get('/job-seeker/{jobSeekerId}', [ApplicationController::class, 'jobSeekerApplications']);
     Route::get('/offer/{jobOfferId}', [ApplicationController::class, 'offerApplications']);
+});
+
+
+// Admin Dashboard
+Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'getStats']);
 });
 
 // Recruiter Dashboard
