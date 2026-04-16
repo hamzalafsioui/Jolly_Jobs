@@ -36,7 +36,7 @@ class UserPolicy
      */
     public function update(User $authUser, User $user)
     {
-        return $authUser->id === $user->id;
+        return $authUser->role === 'admin' || $authUser->id === $user->id;
     }
 
     /**
