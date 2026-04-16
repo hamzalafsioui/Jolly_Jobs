@@ -42,7 +42,13 @@ export default function RecruiterSidebar({ onLogout, user }) {
     },
   ];
 
- 
+  const bottomItems = [
+    { 
+      name: "Settings", 
+      icon: <Settings size={20} />, 
+      path: "/recruiter/settings" 
+    },
+  ];
 
   return (
     <div className="w-64 bg-[#0f111a] text-gray-400 h-screen flex flex-col fixed left-0 top-0 z-50 border-r border-white/5">
@@ -95,6 +101,16 @@ export default function RecruiterSidebar({ onLogout, user }) {
 
       {/* Footer / User Profile */}
       <div className="p-4 border-t border-white/5 bg-white/[0.02]">
+        {bottomItems.map((item) => (
+          <Link
+            key={item.name}
+            to={item.path}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-all text-sm mb-4"
+          >
+            {item.icon}
+            <span>{item.name}</span>
+          </Link>
+        ))}
 
         <div className="flex items-center justify-between px-4 py-2 mt-2">
             <Link 
