@@ -7,7 +7,8 @@ import {
   LogOut,
   ShieldCheck,
   BarChart3,
-  FileText
+  FileText,
+  Tag
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -29,6 +30,11 @@ export default function AdminSidebar({ onLogout, user }) {
       name: "Moderate Jobs", 
       icon: <Briefcase size={20} />, 
       path: "/admin/jobs" 
+    },
+    { 
+      name: "Manage Skills", 
+      icon: <Tag size={20} />, 
+      path: "/admin/skills" 
     },
   ];
 
