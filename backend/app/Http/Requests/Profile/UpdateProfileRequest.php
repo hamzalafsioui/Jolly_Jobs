@@ -30,6 +30,7 @@ class UpdateProfileRequest extends FormRequest
             'last_name' => ['sometimes', 'required', 'string', 'max:255'],
             'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => ['sometimes', 'nullable', 'string', 'min:8', 'confirmed'],
+            'current_password' => ['required_with:password', 'current_password'],
             'phone' => ['sometimes', 'nullable', 'string', 'max:20'],
             'bio' => ['sometimes', 'nullable', 'string'],
             'city_id' => ['sometimes', 'nullable', 'exists:cities,id'],
