@@ -51,6 +51,46 @@ const adminApi = {
     const response = await client.delete(`/job-offers/${id}`);
     return response.data;
   },
+
+  /**
+   * Get all categories
+   */
+  getCategories: async () => {
+    const response = await client.get("/categories");
+    return response.data;
+  },
+
+  /**
+   * Get all skills
+   */
+  getSkills: async () => {
+    const response = await client.get("/admin/skills");
+    return response.data;
+  },
+
+  /**
+   * Create a new skill
+   */
+  createSkill: async (data) => {
+    const response = await client.post("/admin/skills", data);
+    return response.data;
+  },
+
+  /**
+   * Update an existing skill
+   */
+  updateSkill: async (id, data) => {
+    const response = await client.put(`/admin/skills/${id}`, data);
+    return response.data;
+  },
+
+  /**
+   * Delete a skill
+   */
+  deleteSkill: async (id) => {
+    const response = await client.delete(`/admin/skills/${id}`);
+    return response.data;
+  },
 };
 
 export default adminApi;
