@@ -58,6 +58,7 @@ Route::prefix('applications')->middleware('auth:sanctum')->group(function () {
 // Admin Dashboard
 Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'getStats']);
+    Route::apiResource('skills', SkillController::class);
 });
 
 // Recruiter Dashboard
