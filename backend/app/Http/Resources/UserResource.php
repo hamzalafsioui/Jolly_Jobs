@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'phone'      => $this->phone,
             'bio'        => $this->bio,
             'photo'      => $this->photo,
+            'is_active'  => $this->is_active,
             'recruiter'  => $this->when($this->role === 'recruiter', $this->recruiter),
             'job_seeker' => $this->when($this->role === 'job_seeker', $this->jobSeeker),
             'created_at' => $this->created_at?->toISOString(),

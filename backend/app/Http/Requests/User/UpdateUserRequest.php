@@ -30,6 +30,7 @@ class UpdateUserRequest extends FormRequest
             ],
             'password'   => ['sometimes', 'nullable', 'string', 'min:8', 'confirmed'],
             'role'       => ['sometimes', 'required', 'string', Rule::in(['job_seeker', 'recruiter', 'admin'])],
+            'is_active'  => ['sometimes', 'boolean'],
         ];
     }
 }

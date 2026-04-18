@@ -20,6 +20,11 @@ class NotificationRepository implements NotificationRepositoryInterface
         return $notification->update(['is_read' => true]);
     }
 
+    public function markAllRead(int $userId): void
+    {
+        Notification::where('user_id', $userId)->where('is_read', false)->update(['is_read' => true]);
+    }
+
     public function create(array $data): Notification
     {
         return Notification::create($data);

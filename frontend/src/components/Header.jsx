@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Menu, X, Search, Bell, User, ChevronDown } from "lucide-react";
 import Logo from "./Logo";
+import NotificationDropdown from "./NotificationDropdown";
 
 const Header = ({ onLogout, isLoggedIn = false, user = null }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,6 +14,8 @@ const Header = ({ onLogout, isLoggedIn = false, user = null }) => {
   const navLinks = [
     { name: "Find Jobs", to: "/jobs" },
   ];
+
+  const messagesPath = user?.role === "recruiter" ? "/recruiter/messages" : "/messages";
 
   const handleLogoClick = () => {
     navigate("/");
@@ -55,6 +58,16 @@ const Header = ({ onLogout, isLoggedIn = false, user = null }) => {
                   Saved Jobs
                 </Link>
               )}
+              {isLoggedIn && (
+                <Link
+                  to={messagesPath}
+                  className={`text-[15px] font-medium transition-colors ${
+                    isActive(messagesPath) ? "text-jolly-purple font-bold" : "text-jolly-slate hover:text-jolly-purple"
+                  }`}
+                >
+                  Messages
+                </Link>
+              )}
             </nav>
           </div>
 
@@ -74,11 +87,11 @@ const Header = ({ onLogout, isLoggedIn = false, user = null }) => {
                   />
                 </div>
 
-                {/* Notifications */}
-                <button className="relative p-2 text-jolly-slate hover:text-jolly-purple hover:bg-gray-100 rounded-full transition-all">
-                  <Bell size={22} />
-                  <span className="absolute top-2 right-2.5 block h-2 w-2 rounded-full bg-danger border-2 border-white"></span>
-                </button>
+                {/* Shared Notification Dropdown */}
+                <NotificationDropdown 
+                  user={user} 
+                  triggerClassName="p-2 text-jolly-slate hover:text-jolly-purple hover:bg-gray-100 rounded-full"
+                />
 
                 {/* User Profile & Logout */}
                 <div className="flex items-center gap-3">
@@ -166,6 +179,17 @@ const Header = ({ onLogout, isLoggedIn = false, user = null }) => {
               }`}
             >
               Saved Jobs
+            </Link>
+          )}
+          {isLoggedIn && (
+            <Link
+              to={messagesPath}
+              onClick={() => setIsMenuOpen(false)}
+              className={`block px-3 py-2 text-base font-medium rounded-md transition-colors ${
+                isActive(messagesPath) ? "text-jolly-purple bg-jolly-purple/5 font-bold" : "text-jolly-slate hover:text-jolly-purple hover:bg-gray-50"
+              }`}
+            >
+              Messages
             </Link>
           )}
           <div className="pt-4 border-t border-gray-100 flex flex-col space-y-2 px-3">

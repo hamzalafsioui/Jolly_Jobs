@@ -12,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -20,7 +20,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->id === $model->id;
     }
 
     /**
@@ -36,7 +36,12 @@ class UserPolicy
      */
     public function update(User $authUser, User $user)
     {
-        return $authUser->id === $user->id;
+        // not able to update admin
+        if ($user->role === 'admin' && $authUser->id !== $user->id) {
+            return false;
+        }
+
+        return $authUser->role === 'admin' || $authUser->id === $user->id;
     }
 
     /**
@@ -44,6 +49,11 @@ class UserPolicy
      */
     public function delete(User $authUser, User $user)
     {
+        // not able to delete admin
+        if ($user->role === 'admin') {
+            return false;
+        }
+
         return $authUser->role === 'admin';
     }
 

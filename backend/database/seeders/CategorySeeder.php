@@ -31,6 +31,10 @@ class CategorySeeder extends Seeder
                 'name' => 'Marketing',
                 'icon' => 'Megaphone'
             ],
+            [
+                'name' => 'Uncategorized',
+                'icon' => 'HelpCircle'
+            ],
         ]);
     }
 }

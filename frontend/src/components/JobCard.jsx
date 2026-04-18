@@ -1,14 +1,25 @@
-import { MapPin, Zap } from "lucide-react";
+import { MapPin, Building2, Zap } from "lucide-react";
 
 export default function JobCard({ job, onClick }) {
   const formatTypeBadge = (type) => {
-    if (type === "Full-time") {
+    const t = type?.toLowerCase();
+    if (t === "full-time" || t === "fulltime") {
       return "bg-jolly-teal/10 text-jolly-teal";
-    } else if (type === "Remote" || type === "Contract") {
+    } else if (t === "remote" || t === "contract") {
       return "bg-jolly-purple/10 text-jolly-purple";
     }
     return "bg-gray-100 text-gray-600";
   };
+
+  const getImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:8001';
+    return `${baseUrl}/storage/${path}`;
+  };
+
+  // logo Source (job.logo from company or from recruiter Photo)
+  const logoSrc = getImageUrl(job.logo || job.recruiterPhoto);
 
   return (
     <div 
@@ -26,17 +37,21 @@ export default function JobCard({ job, onClick }) {
 
       <div className="flex items-start mb-5">
         <div
-          className={`w-12 h-12 rounded-xl flex items-center justify-center ${job.logoColor} shadow-inner shadow-black/5`}
+          className="w-12 h-12 rounded-xl flex items-center justify-center bg-jolly-purple/5 border border-jolly-purple/10 overflow-hidden"
         >
-          <div className="w-6 h-6 flex items-center justify-center text-white/90">
-             {job.logo || <Zap size={20} />}
-          </div>
+          {logoSrc ? (
+            <img src={logoSrc} alt={job.company} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-6 h-6 flex items-center justify-center text-jolly-purple/60">
+               <Building2 size={20} />
+            </div>
+          )}
         </div>
-        <div className="ml-4">
-           <h3 className="font-heading font-bold text-jolly-navy text-base mb-0.5 leading-tight group-hover:text-jolly-purple transition-colors">
+        <div className="ml-4 flex-1">
+           <h3 className="font-heading font-bold text-jolly-navy text-base mb-0.5 leading-tight group-hover:text-jolly-purple transition-colors truncate">
             {job.title}
           </h3>
-          <p className="text-xs text-jolly-slate font-medium font-body">
+          <p className="text-xs text-jolly-slate font-medium font-body truncate">
             {job.company}
           </p>
         </div>
@@ -45,7 +60,7 @@ export default function JobCard({ job, onClick }) {
       <div className="flex items-center space-x-4 mb-6">
         <div className="flex items-center text-jolly-slate text-[13px] font-body bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
           <MapPin size={12} className="mr-1.5 text-jolly-purple" />
-          {job.location}
+          <span className="truncate max-w-[120px]">{job.location}</span>
         </div>
         <div className="text-jolly-navy font-bold text-[13px] font-body">
            {job.salary}
@@ -53,7 +68,7 @@ export default function JobCard({ job, onClick }) {
       </div>
 
       <div className="flex flex-wrap gap-2 mb-6">
-        {job.tags.map((tag, idx) => (
+        {(job.tags || []).map((tag, idx) => (
           <span
             key={idx}
             className="bg-gray-100 text-jolly-slate text-[11px] px-2.5 py-1 rounded-full font-medium font-body transition-colors hover:bg-jolly-purple/5 hover:text-jolly-purple"

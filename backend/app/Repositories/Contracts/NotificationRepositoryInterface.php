@@ -9,5 +9,6 @@ interface NotificationRepositoryInterface
 {
     public function findByUser(int $userId): Collection;
     public function markAsRead(int $id): bool;
+    public function markAllRead(int $userId): void;
     public function create(array $data): Notification;
 }
