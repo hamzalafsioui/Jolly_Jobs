@@ -12,12 +12,15 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SkillController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\AdminDashboardController;
+use App\Http\Controllers\Api\MessageController;
+use Illuminate\Support\Facades\Broadcast;
 
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
@@ -66,6 +69,15 @@ Route::prefix('recruiter')->middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [RecruiterDashboardController::class, 'getStats']);
     Route::get('/jobs', [RecruiterDashboardController::class, 'myJobs']);
     Route::get('/applications', [RecruiterDashboardController::class, 'myApplications']);
+});
+
+// Messages
+Route::prefix('messages')->middleware('auth:sanctum')->group(function () {
+    Route::get('/unread-count', [MessageController::class, 'unreadCount']);
+    Route::get('/conversations', [MessageController::class, 'conversations']);
+    Route::get('/{userId}', [MessageController::class, 'history']);
+    Route::post('/{userId}', [MessageController::class, 'send']);
+    Route::patch('/{userId}/read', [MessageController::class, 'markRead']);
 });
 
 Route::get('/test-connection', function () {
