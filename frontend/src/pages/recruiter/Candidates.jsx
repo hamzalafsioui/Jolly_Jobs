@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Users, Search, Filter, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import recruiterApi from "../../api/recruiter.api";
 
 const STATUSES = ["all", "sent", "viewed", "shortlisted", "accepted", "rejected"];
@@ -19,6 +20,7 @@ export default function Candidates() {
   const [search, setSearch]             = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [updating, setUpdating]         = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     recruiterApi.getMyApplications()
@@ -69,6 +71,11 @@ export default function Candidates() {
   const initials = (app) => {
     const u = app.job_seeker?.user;
     return u ? u.first_name?.charAt(0).toUpperCase() : "?";
+  };
+
+  const startMessage = (user) => {
+    if (!user) return;
+    navigate('/recruiter/messages', { state: { newContact: user } });
   };
 
   if (loading) {
@@ -162,16 +169,25 @@ export default function Candidates() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <select
-                      value={app.status}
-                      disabled={updating === app.id}
-                      onChange={e => handleStatusChange(app.id, e.target.value)}
-                      className="text-xs border border-slate-200 rounded-lg px-2 py-1.5 bg-white text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 disabled:opacity-50"
-                    >
-                      {["sent", "viewed", "shortlisted", "accepted", "rejected"].map(s => (
-                        <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
-                      ))}
-                    </select>
+                    <div className="flex items-center gap-3">
+                      <select
+                        value={app.status}
+                        disabled={updating === app.id}
+                        onChange={e => handleStatusChange(app.id, e.target.value)}
+                        className="text-xs border border-slate-200 rounded-lg px-2 py-1.5 bg-white text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 disabled:opacity-50"
+                      >
+                        {["sent", "viewed", "shortlisted", "accepted", "rejected"].map(s => (
+                          <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={() => startMessage(app.job_seeker?.user)}
+                        className="text-indigo-600 hover:text-indigo-800 p-1.5 rounded hover:bg-slate-100 transition-colors"
+                        title="Message Candidate"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
