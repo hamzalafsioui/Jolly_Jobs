@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\SkillController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Broadcast;
 
 
@@ -78,6 +79,13 @@ Route::prefix('messages')->middleware('auth:sanctum')->group(function () {
     Route::get('/{userId}', [MessageController::class, 'history']);
     Route::post('/{userId}', [MessageController::class, 'send']);
     Route::patch('/{userId}/read', [MessageController::class, 'markRead']);
+});
+
+// Notifications
+Route::prefix('notifications')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [NotificationController::class, 'index']);
+    Route::patch('/read-all', [NotificationController::class, 'markAllRead']);
+    Route::patch('/{id}/read', [NotificationController::class, 'markRead']);
 });
 
 Route::get('/test-connection', function () {
