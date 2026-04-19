@@ -29,6 +29,7 @@ class User extends Authenticatable
         'phone',
         'photo',
         'bio',
+        'google_id',
     ];
 
     public function city()
