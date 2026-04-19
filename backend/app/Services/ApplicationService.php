@@ -6,6 +6,8 @@ use App\Repositories\Contracts\ApplicationRepositoryInterface;
 use App\Repositories\Contracts\JobOfferRepositoryInterface;
 use App\Models\Application;
 use Illuminate\Support\Collection;
+use App\Events\NotificationSent;
+use App\Models\Notification;
 
 class ApplicationService
 {
@@ -30,6 +32,18 @@ class ApplicationService
             $this->jobOfferRepository->update($jobOffer->id, [
                 'applications_count' => $jobOffer->applications_count + 1
             ]);
+
+            if ($jobOffer->recruiter && $jobOffer->recruiter->user) {
+                $notification = Notification::create([
+                    'user_id' => $jobOffer->recruiter->user->id,
+                    'type' => 'new_application',
+                    'title' => 'New Job Application',
+                    'content' => "A new candidate applied for your job offer: {$jobOffer->title}.",
+                    'is_read' => false,
+                ]);
+
+                broadcast(new NotificationSent($notification));
+            }
         }
 
         return $application;

@@ -37,6 +37,7 @@ export default function Profile() {
     city_id: "",
     // Recruiter fields
     company_name: "",
+    company_size: "",
     industry: "",
     website: "",
     description: "",
@@ -109,6 +110,7 @@ export default function Profile() {
           setFormData({
             ...baseData,
             company_name: user.recruiter?.company_name || "",
+            company_size: user.recruiter?.company_size || "",
             industry: user.recruiter?.industry || "",
             website: user.recruiter?.website || "",
             description: user.recruiter?.description || "",
@@ -196,6 +198,7 @@ export default function Profile() {
     if (role === "recruiter") {
       const recruiterFields = [
         "company_name",
+        "company_size",
         "industry",
         "website",
         "description",
@@ -523,6 +526,25 @@ export default function Profile() {
                     className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 outline-none"
                     required
                   />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
+                    Company Size
+                  </label>
+                  <select
+                    name="company_size"
+                    value={formData.company_size}
+                    onChange={handleChange}
+                    className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-jolly-purple/20 outline-none appearance-none"
+                  >
+                    <option value="">Select Size</option>
+                    <option value="1-10">1-10 employees</option>
+                    <option value="11-50">11-50 employees</option>
+                    <option value="51-200">51-200 employees</option>
+                    <option value="201-500">201-500 employees</option>
+                    <option value="501-1000">501-1000 employees</option>
+                    <option value="1000+">1000+ employees</option>
+                  </select>
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">

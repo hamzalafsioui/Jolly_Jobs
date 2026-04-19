@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Menu, X, Search, Bell, User, ChevronDown } from "lucide-react";
 import Logo from "./Logo";
 import NotificationDropdown from "./NotificationDropdown";
+import SystemNotificationDropdown from "./SystemNotificationDropdown";
 
 const Header = ({ onLogout, isLoggedIn = false, user = null }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -88,10 +89,16 @@ const Header = ({ onLogout, isLoggedIn = false, user = null }) => {
                 </div>
 
                 {/* Shared Notification Dropdown */}
-                <NotificationDropdown 
-                  user={user} 
-                  triggerClassName="p-2 text-jolly-slate hover:text-jolly-purple hover:bg-gray-100 rounded-full"
-                />
+                <div className="flex items-center space-x-2">
+                  <SystemNotificationDropdown 
+                    user={user} 
+                    triggerClassName="p-2 text-jolly-slate hover:text-jolly-purple hover:bg-gray-100 rounded-full flex items-center justify-center"
+                  />
+                  <NotificationDropdown 
+                    user={user} 
+                    triggerClassName="p-2 text-jolly-slate hover:text-jolly-purple hover:bg-gray-100 rounded-full flex items-center justify-center"
+                  />
+                </div>
 
                 {/* User Profile & Logout */}
                 <div className="flex items-center gap-3">

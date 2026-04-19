@@ -188,12 +188,6 @@ export default function JobDetails({ onBack }) {
                  <button className="px-6 py-4 text-sm font-bold text-jolly-purple border-b-2 border-jolly-purple">
                    Description
                  </button>
-                 <button className="px-6 py-4 text-sm font-medium text-jolly-slate hover:text-jolly-navy transition-colors">
-                   Requirements
-                 </button>
-                 <button className="px-6 py-4 text-sm font-medium text-jolly-slate hover:text-jolly-navy transition-colors">
-                   Company
-                 </button>
                </div>
                
                <div className="p-6 lg:p-8">
