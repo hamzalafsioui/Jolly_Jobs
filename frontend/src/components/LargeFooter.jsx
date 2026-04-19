@@ -9,7 +9,7 @@ const LargeFooter = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
           {/* Logo & About */}
           <div className="space-y-8">
-            <Logo className="text-2xl brightness-0 invert" />
+            <Logo className="text-2xl brightness-50" />
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
               Making the tech job search joyful again. Connecting the best
               talent with the world's most innovative companies.
