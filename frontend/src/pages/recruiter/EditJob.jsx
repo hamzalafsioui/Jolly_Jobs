@@ -102,22 +102,26 @@ export default function EditJob() {
 
     try {
       // Using free Nominatim (OpenStreetMap) Geocoding service
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(form.address)}&limit=1`);
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(form.address)}&limit=1`,
+      );
       const data = await response.json();
-      
+
       clearTimeout(timeoutId);
       setVerifying(false);
 
       if (data && data.length > 0) {
         const result = data[0];
-        setForm(prev => ({
+        setForm((prev) => ({
           ...prev,
           latitude: parseFloat(result.lat),
-          longitude: parseFloat(result.lon)
+          longitude: parseFloat(result.lon),
         }));
         alert("Location verified via OpenStreetMap!");
       } else {
-        alert("Could not find this address. Please try adding the city name (e.g. 'Street Name, City').");
+        alert(
+          "Could not find this address. Please try adding the city name (e.g. 'Street Name, City').",
+        );
       }
     } catch (err) {
       clearTimeout(timeoutId);
@@ -313,7 +317,9 @@ export default function EditJob() {
 
           {/* Detailed Address */}
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Office Address (Optional for Map)</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">
+              Office Address (Optional for Map)
+            </label>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -332,10 +338,15 @@ export default function EditJob() {
                 {verifying ? "Verifying..." : "Verify on Map"}
               </button>
             </div>
-            {(form.latitude && form.longitude) && (
-              <p className="mt-2 text-[10px] text-green-600 font-medium">Coordinates captured: {Number(form.latitude).toFixed(4)}, {Number(form.longitude).toFixed(4)}</p>
+            {form.latitude && form.longitude && (
+              <p className="mt-2 text-[10px] text-green-600 font-medium">
+                Coordinates captured: {Number(form.latitude).toFixed(4)},{" "}
+                {Number(form.longitude).toFixed(4)}
+              </p>
             )}
-            <p className="mt-1 text-[10px] text-slate-400">Specify the street address to show an exact pin on the job map.</p>
+            <p className="mt-1 text-[10px] text-slate-400">
+              Specify the street address to show an exact pin on the job map.
+            </p>
           </div>
 
           {/* Salary */}
