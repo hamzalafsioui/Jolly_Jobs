@@ -17,6 +17,7 @@ import {
   GraduationCap,
   Phone,
   MapPin,
+  Bell,
 } from "lucide-react";
 import profileApi from "../api/profile.api";
 import jobApi from "../api/job.api";
@@ -45,6 +46,7 @@ export default function Profile() {
     specialty: "",
     experience_level: "",
     skills: [],
+    notification_settings: { new_application: true, status_update: true, weekly_summary: false },
   });
 
   const [cities, setCities] = useState([]);
@@ -124,6 +126,7 @@ export default function Profile() {
             specialty: user.job_seeker?.specialty || "",
             experience_level: user.job_seeker?.experience_level || "",
             skills: user.job_seeker?.skills?.map((s) => s.id) || [],
+            notification_settings: user.notification_settings || { new_application: true, status_update: true, weekly_summary: false },
           });
           if (user.job_seeker?.cv_path) {
             setPreview(`${storageBase}/${user.job_seeker.cv_path}`);
@@ -224,6 +227,12 @@ export default function Profile() {
         formData.skills.forEach((skillId) =>
           submissionData.append("skills[]", skillId),
         );
+      }
+
+      if (formData.notification_settings) {
+        Object.keys(formData.notification_settings).forEach((key) => {
+          submissionData.append(`notification_settings[${key}]`, formData.notification_settings[key] ? 1 : 0);
+        });
       }
 
       if (file) submissionData.append("cv", file);
@@ -710,6 +719,72 @@ export default function Profile() {
                   </label>
                 </div>
               </div>
+            </div>
+          </section>
+        )}
+
+        {/* Section 3: Notification Preferences */}
+        {!isRecruiter && (
+          <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+                <Bell size={20} />
+              </div>
+              <h2 className="text-xl font-black text-slate-800">
+                Notification Preferences
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              {[
+                {
+                  key: "status_update",
+                  label: "Status Updates",
+                  desc: "Receive updates when application statuses change.",
+                },
+                {
+                  key: "weekly_summary",
+                  label: "Weekly Summary",
+                  desc: "Get a weekly digest of your hiring activity.",
+                },
+              ].map((item) => (
+                <div
+                  key={item.key}
+                  className="flex items-start justify-between gap-4 py-4 border-b border-slate-50 last:border-0"
+                >
+                  <div>
+                    <p className="font-bold text-sm text-slate-700">
+                      {item.label}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-0.5">{item.desc}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        notification_settings: {
+                          ...prev.notification_settings,
+                          [item.key]: !prev.notification_settings?.[item.key],
+                        },
+                      }))
+                    }
+                    className={`relative inline-flex w-11 h-6 rounded-full transition-colors shrink-0 ${
+                      formData.notification_settings?.[item.key]
+                        ? "bg-jolly-purple"
+                        : "bg-slate-200"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block w-5 h-5 bg-white rounded-full shadow mt-0.5 transition-transform ${
+                        formData.notification_settings?.[item.key]
+                          ? "translate-x-5"
+                          : "translate-x-0.5"
+                      }`}
+                    />
+                  </button>
+                </div>
+              ))}
             </div>
           </section>
         )}
