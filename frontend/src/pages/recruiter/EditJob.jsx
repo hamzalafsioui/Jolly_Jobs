@@ -25,7 +25,12 @@ export default function EditJob() {
     requirements: "",
     is_remote: false,
     skills: [],
+    address: "",
+    latitude: "",
+    longitude: "",
   });
+
+  const [verifying, setVerifying] = useState(false);
 
   const [availableSkills, setAvailableSkills] = useState([]);
   const [cities, setCities] = useState([]);
@@ -60,6 +65,9 @@ export default function EditJob() {
             requirements: job.requirements || "",
             is_remote: !!job.remote,
             skills: job.skills ? job.skills.map((s) => s.name) : [],
+            address: job.address || "",
+            latitude: job.latitude || "",
+            longitude: job.longitude || "",
           });
         } else {
           setError("Failed to fetch job details.");
@@ -76,6 +84,47 @@ export default function EditJob() {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const handleVerifyAddress = async () => {
+    if (!form.address.trim()) {
+      alert("Please enter an address first");
+      return;
+    }
+
+    setVerifying(true);
+
+    // Safety timeout
+    const timeoutId = setTimeout(() => {
+      setVerifying(false);
+      alert("Verification timed out. Using free OpenStreetMap service...");
+    }, 8000);
+
+    try {
+      // Using free Nominatim (OpenStreetMap) Geocoding service
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(form.address)}&limit=1`);
+      const data = await response.json();
+      
+      clearTimeout(timeoutId);
+      setVerifying(false);
+
+      if (data && data.length > 0) {
+        const result = data[0];
+        setForm(prev => ({
+          ...prev,
+          latitude: parseFloat(result.lat),
+          longitude: parseFloat(result.lon)
+        }));
+        alert("Location verified via OpenStreetMap!");
+      } else {
+        alert("Could not find this address. Please try adding the city name (e.g. 'Street Name, City').");
+      }
+    } catch (err) {
+      clearTimeout(timeoutId);
+      setVerifying(false);
+      alert("Address verification service error. Please try again.");
+      console.error(err);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -260,6 +309,33 @@ export default function EditJob() {
                 ))}
               </select>
             </div>
+          </div>
+
+          {/* Detailed Address */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">Office Address (Optional for Map)</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                name="address"
+                value={form.address}
+                onChange={handleChange}
+                placeholder="e.g. Gueliz, Marrakech, Morocco"
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button
+                type="button"
+                onClick={handleVerifyAddress}
+                disabled={verifying}
+                className="px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-xl border border-indigo-100 hover:bg-indigo-100 transition-colors disabled:opacity-50 text-xs shrink-0"
+              >
+                {verifying ? "Verifying..." : "Verify on Map"}
+              </button>
+            </div>
+            {(form.latitude && form.longitude) && (
+              <p className="mt-2 text-[10px] text-green-600 font-medium">Coordinates captured: {Number(form.latitude).toFixed(4)}, {Number(form.longitude).toFixed(4)}</p>
+            )}
+            <p className="mt-1 text-[10px] text-slate-400">Specify the street address to show an exact pin on the job map.</p>
           </div>
 
           {/* Salary */}
