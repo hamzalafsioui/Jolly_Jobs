@@ -92,4 +92,26 @@ class ApplicationController extends Controller
         $applications = $this->applicationService->getOfferApplications($jobOfferId);
         return ApiResponse::success(ApplicationResource::collection($applications));
     }
+
+    public function downloadCvFile($id): JsonResponse
+    {
+        $application = $this->applicationService->getApplication($id);
+        if (!$application || !$application->cv_path) {
+            return ApiResponse::notFound('CV not found.');
+        }
+
+        $path = storage_path('app/public/' . $application->cv_path);
+
+        if (!file_exists($path)) {
+            return ApiResponse::notFound('CV file not found on disk.');
+        }
+
+        $content = file_get_contents($path);
+        $base64 = base64_encode($content);
+
+        return ApiResponse::success([
+            'base64' => $base64,
+            'mime'   => 'application/pdf'
+        ], 'CV retrieved successfully.');
+    }
 }
