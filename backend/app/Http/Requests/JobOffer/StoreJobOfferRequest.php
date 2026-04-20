@@ -40,6 +40,9 @@ class StoreJobOfferRequest extends FormRequest
             'remote'            => ['boolean'],
             'experience_level'  => ['required', 'string', 'max:255'],
             'image_path'        => ['nullable', 'string', 'max:255'],
+            'address'           => ['nullable', 'string', 'max:500'],
+            'latitude'          => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude'         => ['nullable', 'numeric', 'between:-180,180'],
             'skills'            => ['nullable', 'array'],
             'skills.*'          => ['string', 'max:255'],
         ];
