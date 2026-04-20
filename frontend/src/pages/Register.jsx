@@ -91,6 +91,21 @@ export default function Register({ onBack, onLoginClick, onRegisterSuccess }) {
     }
   };
 
+  const handleGoogleSignup = async () => {
+    try {
+      // Save role to localStorage so callback can use it
+      localStorage.setItem("pending_google_role", role);
+      
+      const response = await authApi.getGoogleAuthUrl();
+      if (response.data?.url) {
+        window.location.href = response.data.url;
+      }
+    } catch (err) {
+      console.error("Google signup error:", err);
+      setError("Failed to initialize Google signup.");
+    }
+  };
+
   return (
     <div className="h-screen flex bg-white font-body overflow-hidden">
       {/* Left Panel | Branding & Image */}
@@ -390,6 +405,7 @@ export default function Register({ onBack, onLoginClick, onRegisterSuccess }) {
           <div className="flex gap-4">
             <button
               type="button"
+              onClick={handleGoogleSignup}
               className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-jolly-navy font-semibold py-3 px-4 rounded-button transition-all active:scale-[0.98] text-[13px]"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
