@@ -11,9 +11,11 @@ import {
   Loader2, 
   Send, 
   FileText, 
-  X 
+  X,
+  Globe 
 } from "lucide-react";
 import jobApi from "../api/job.api";
+import MapComponent from "../components/MapComponent";
 
 const storageBase = import.meta.env.VITE_STORAGE_URL || "http://localhost:8001/storage";
 
@@ -219,22 +221,37 @@ export default function JobDetails({ onBack }) {
             {/* Location block */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 lg:p-8">
                <h3 className="text-lg font-bold text-jolly-navy mb-4 font-heading">Location</h3>
-               <div className="bg-gray-100 w-full h-[250px] rounded-xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative border border-gray-200">
-                  {/* Generic map visualization replacement */}
-                  <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(#1e293b 1px, transparent 1px)", backgroundSize: "20px 20px" }}></div>
-                  <div className="relative z-10 flex flex-col items-center">
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg text-jolly-purple mb-3">
-                      <MapPin size={24} />
+               <div className="w-full h-[300px] rounded-xl overflow-hidden relative border border-gray-100 shadow-inner group">
+                  {job.remote ? (
+                    <div className="absolute inset-0 bg-indigo-50/50 flex flex-col items-center justify-center text-center p-8">
+                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg text-indigo-500 mb-4 animate-bounce-slow">
+                          <Globe size={32} />
+                        </div>
+                        <h4 className="text-xl font-bold text-jolly-navy mb-2">Remote Position</h4>
+                        <p className="text-sm text-jolly-slate max-w-xs">This role is fully remote. You can work from anywhere in the world!</p>
                     </div>
-                    <p className="font-bold text-jolly-navy text-lg">{location}</p>
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-auto bg-white rounded-lg shadow-md p-3 flex items-start gap-2 z-10">
-                     <MapPin size={16} className="text-jolly-purple mt-0.5" />
-                     <div>
-                       <p className="text-xs font-bold text-jolly-navy">Headquarters</p>
-                       <p className="text-[10px] text-jolly-slate truncate max-w-[150px]">{location} Area</p>
-                     </div>
-                  </div>
+                  ) : (
+                    <MapComponent 
+                      address={job.address}
+                      latitude={job.latitude}
+                      longitude={job.longitude}
+                      cityName={job.city?.name}
+                    />
+                  )}
+                  
+                  {!job.remote && (
+                    <div className="absolute bottom-4 left-4 right-auto bg-white/90 backdrop-blur-md rounded-xl shadow-xl p-4 flex items-start gap-3 z-10 border border-white/20 transition-all group-hover:translate-y-[-4px]">
+                       <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-500 shrink-0">
+                          <MapPin size={20} />
+                       </div>
+                       <div>
+                         <p className="text-xs font-bold text-jolly-navy">{job.address ? 'Specific Location' : 'General Area'}</p>
+                         <p className="text-[11px] text-jolly-slate font-medium truncate max-w-[180px]">
+                           {job.address || `${job.city?.name || 'Various'} Area`}
+                         </p>
+                       </div>
+                    </div>
+                  )}
                </div>
             </div>
 
