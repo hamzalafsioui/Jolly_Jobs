@@ -8,6 +8,7 @@ use App\Models\JobOffer;
 use App\Models\Recruiter;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
+use App\Models\Skill;
 
 class JobOfferSeeder extends Seeder
 {
@@ -48,6 +49,8 @@ class JobOfferSeeder extends Seeder
             'Social Media Manager'
         ];
 
+        $skills = Skill::all();
+
         foreach (range(1, 40) as $index) {
             $title = Arr::random($jobTitles);
             $contractType = Arr::random(JobOffer::CONTRACT_TYPES);
@@ -56,7 +59,7 @@ class JobOfferSeeder extends Seeder
             $recruiter = $recruiters->random();
             $isRemote = fake()->boolean(20); // 20% chance of remote
 
-            JobOffer::create([
+            $jobOffer = JobOffer::create([
                 'recruiter_id' => $recruiter->id,
                 'category_id' => $category->id,
                 'city_id' => $city->id,
@@ -71,6 +74,11 @@ class JobOfferSeeder extends Seeder
                 'views_count' => fake()->numberBetween(0, 500),
                 'applications_count' => fake()->numberBetween(0, 50),
             ]);
+
+            // Attach 3-6 random skills to each job offer
+            $jobOffer->skills()->attach(
+                $skills->random(rand(3, 6))->pluck('id')->toArray()
+            );
         }
     }
 }
