@@ -25,6 +25,16 @@ const authApi = {
     return response.data;
   },
 
+  getGoogleAuthUrl: async () => {
+    const response = await client.get("/auth/google/url");
+    return response.data;
+  },
+
+  googleCallback: async (params) => {
+    const response = await client.post("/auth/google/callback", params);
+    return response.data;
+  },
+
   /**
    * Test connection to backend
    */
