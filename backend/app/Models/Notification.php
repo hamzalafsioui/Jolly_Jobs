@@ -16,6 +16,12 @@ class Notification extends Model
         'title',
         'content',
         'is_read',
+        'data',
+    ];
+
+    protected $casts = [
+        'data' => 'array',
+        'is_read' => 'boolean',
     ];
 
     public function user(): BelongsTo

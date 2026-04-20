@@ -34,6 +34,7 @@ class NotificationSent implements ShouldBroadcastNow
             'title'      => $this->notification->title,
             'content'    => $this->notification->content,
             'is_read'    => $this->notification->is_read,
+            'data'       => $this->notification->data,
             'created_at' => $this->notification->created_at->toISOString(),
         ];
     }
