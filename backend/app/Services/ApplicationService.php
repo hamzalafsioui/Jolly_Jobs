@@ -25,7 +25,7 @@ class ApplicationService
     public function apply(array $data): Application
     {
         $application = $this->applicationRepository->create($data);
-        
+
         // Increment applications_count on job offer
         $jobOffer = $this->jobOfferRepository->findById($data['job_offer_id']);
         if ($jobOffer) {
@@ -40,6 +40,10 @@ class ApplicationService
                     'title' => 'New Job Application',
                     'content' => "A new candidate applied for your job offer: {$jobOffer->title}.",
                     'is_read' => false,
+                    'data' => [
+                        'job_offer_id'   => $jobOffer->id,
+                        'application_id' => $application->id,
+                    ],
                 ]);
 
                 broadcast(new NotificationSent($notification));
@@ -56,11 +60,57 @@ class ApplicationService
 
     public function updateStatus(int $id, string $status): bool
     {
+        $application = $this->applicationRepository->findById($id);
+        if (!$application) {
+            return false;
+        }
+
+        $oldStatus = $application->status;
         $data = ['status' => $status];
+
         if ($status === 'viewed') {
             $data['viewed_at'] = now();
         }
-        return $this->applicationRepository->update($id, $data);
+
+        $updated = $this->applicationRepository->update($id, $data);
+
+        // Notify Job Seeker if status changed significantly
+        if ($updated && $oldStatus !== $status && in_array($status, ['shortlisted', 'accepted', 'rejected'])) {
+            $this->notifyJobSeekerOfStatusChange($application->fresh(['jobSeeker.user', 'jobOffer']), $status);
+        }
+
+        return $updated;
+    }
+
+    protected function notifyJobSeekerOfStatusChange(Application $application, string $status): void
+    {
+        $jobSeekerUser = $application->jobSeeker?->user;
+        if (!$jobSeekerUser) {
+            return;
+        }
+
+        $jobTitle = $application->jobOffer?->title ?? 'a job';
+        $statusLabel = ucfirst($status);
+
+        $messages = [
+            'shortlisted' => "Good news! You have been shortlisted for the {$jobTitle} position.",
+            'accepted'    => "Congratulations! Your application for {$jobTitle} has been Accepted. The recruiter will contact you soon.",
+            'rejected'    => "We regret to inform you that your application for {$jobTitle} was not selected at this time.",
+        ];
+
+        $notification = Notification::create([
+            'user_id' => $jobSeekerUser->id,
+            'type' => 'application_status_updated',
+            'title' => "Application Update: {$statusLabel}",
+            'content' => $messages[$status] ?? "The status of your application for {$jobTitle} has been updated to {$statusLabel}.",
+            'is_read' => false,
+            'data' => [
+                'job_offer_id' => $application->job_offer_id,
+                'application_id' => $application->id,
+            ],
+        ]);
+
+        broadcast(new NotificationSent($notification));
     }
 
     public function getJobSeekerApplications(int $jobSeekerId): Collection
