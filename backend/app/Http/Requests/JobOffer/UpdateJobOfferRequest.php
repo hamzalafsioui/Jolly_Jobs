@@ -28,6 +28,9 @@ class UpdateJobOfferRequest extends FormRequest
             'experience_level'  => ['sometimes', 'string', 'max:255'],
             'status'            => ['sometimes', Rule::in(['active', 'closed', 'draft', 'expired'])],
             'image_path'        => ['nullable', 'string', 'max:255'],
+            'address'           => ['sometimes', 'nullable', 'string', 'max:500'],
+            'latitude'          => ['sometimes', 'nullable', 'numeric', 'between:-90,90'],
+            'longitude'         => ['sometimes', 'nullable', 'numeric', 'between:-180,180'],
             'skills'            => ['nullable', 'array'],
             'skills.*'          => ['string', 'max:255'],
         ];

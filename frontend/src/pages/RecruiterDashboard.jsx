@@ -140,7 +140,7 @@ export default function RecruiterDashboard() {
            </div>
 
            <div className="overflow-x-auto">
-              <table className="w-full text-left">
+              <table className="w-full text-left min-w-[700px]">
                 <thead>
                   <tr className="text-[10px] uppercase font-black text-slate-400 tracking-[0.15em] border-b border-slate-50">
                     <th className="pb-5 pt-2">Candidate</th>
@@ -197,7 +197,8 @@ export default function RecruiterDashboard() {
               <h3 className="text-lg font-black text-slate-800">My Active Jobs</h3>
               <button className="text-jolly-purple text-xs font-black hover:underline underline-offset-4">See All Jobs</button>
             </div>
-            <div className="space-y-4">
+            <div className="overflow-x-auto">
+              <div className="space-y-4 min-w-[800px] lg:min-w-0 pb-4">
                {data.top_jobs.map((job) => (
                  <div key={job.id} className="p-5 border border-slate-50 rounded-[1.5rem] flex items-center justify-between hover:border-jolly-purple/20 hover:bg-jolly-purple/[0.01] transition-all group">
                     <div className="flex items-center gap-5">
@@ -233,6 +234,7 @@ export default function RecruiterDashboard() {
                     </button>
                  </div>
                )}
+              </div>
             </div>
          </div>
       </div>

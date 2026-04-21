@@ -38,6 +38,9 @@ class JobOfferResource extends JsonResource
             'views_count'        => $this->views_count,
             'applications_count' => $this->applications_count,
             'image_path'         => $this->image_path,
+            'address'            => $this->address,
+            'latitude'           => (float) $this->latitude,
+            'longitude'          => (float) $this->longitude,
             'is_saved'           => $this->when($request->user() && $request->user()->jobSeeker, function() use ($request) {
                 return $request->user()->jobSeeker->savedJobs()->where('job_offer_id', $this->id)->exists();
             }),

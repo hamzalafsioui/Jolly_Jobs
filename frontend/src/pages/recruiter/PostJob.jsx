@@ -22,7 +22,12 @@ export default function PostJob() {
     requirements: "",
     is_remote: false,
     skills: [],
+    address: "",
+    latitude: "",
+    longitude: "",
   });
+
+  const [verifying, setVerifying] = useState(false);
 
   const [availableSkills, setAvailableSkills] = useState([]);
   const [cities, setCities] = useState([]);
@@ -30,26 +35,30 @@ export default function PostJob() {
   const [skillInput, setSkillInput] = useState("");
 
   useEffect(() => {
-    recruiterApi.getContractTypes()
-      .then(res => {
+    recruiterApi
+      .getContractTypes()
+      .then((res) => {
         if (res.success) setContractTypes(res.data);
       })
       .catch(() => {});
 
-    jobApi.getSkills()
-      .then(res => {
+    jobApi
+      .getSkills()
+      .then((res) => {
         if (res.success) setAvailableSkills(res.data);
       })
       .catch(() => {});
 
-    jobApi.getCities()
-      .then(res => {
+    jobApi
+      .getCities()
+      .then((res) => {
         if (res.success) setCities(res.data);
       })
       .catch(() => {});
 
-    jobApi.getCategories()
-      .then(res => {
+    jobApi
+      .getCategories()
+      .then((res) => {
         if (res.success) setCategories(res.data);
       })
       .catch(() => {});
@@ -57,7 +66,55 @@ export default function PostJob() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm(prev => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleVerifyAddress = async () => {
+    if (!form.address.trim()) {
+      alert("Please enter an address first");
+      return;
+    }
+
+    setVerifying(true);
+
+    // Safety timeout
+    const timeoutId = setTimeout(() => {
+      setVerifying(false);
+      alert("Verification timed out. Using free OpenStreetMap service...");
+    }, 8000);
+
+    try {
+      // Using free Nominatim (OpenStreetMap) Geocoding service
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(form.address)}&limit=1`,
+      );
+      const data = await response.json();
+
+      clearTimeout(timeoutId);
+      setVerifying(false);
+
+      if (data && data.length > 0) {
+        const result = data[0];
+        setForm((prev) => ({
+          ...prev,
+          latitude: parseFloat(result.lat),
+          longitude: parseFloat(result.lon),
+        }));
+        alert("Location verified via OpenStreetMap!");
+      } else {
+        alert(
+          "Could not find this address. Please try adding the city name (e.g. 'Street Name, City').",
+        );
+      }
+    } catch (err) {
+      clearTimeout(timeoutId);
+      setVerifying(false);
+      alert("Address verification service error. Please try again.");
+      console.error(err);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -74,7 +131,10 @@ export default function PostJob() {
       setSuccess(true);
       setTimeout(() => navigate("/recruiter/jobs"), 1500);
     } catch (err) {
-      setError(err?.response?.data?.message || "Failed to create job. Please try again.");
+      setError(
+        err?.response?.data?.message ||
+          "Failed to create job. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -84,11 +144,23 @@ export default function PostJob() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh]">
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-          <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          <svg
+            className="w-8 h-8 text-green-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
           </svg>
         </div>
-        <h2 className="text-xl font-bold text-slate-800">Job Posted Successfully!</h2>
+        <h2 className="text-xl font-bold text-slate-800">
+          Job Posted Successfully!
+        </h2>
         <p className="text-slate-500 mt-1">Redirecting to My Jobs…</p>
       </div>
     );
@@ -98,7 +170,9 @@ export default function PostJob() {
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-800">Post a New Job</h1>
-        <p className="text-slate-500 mt-1">Fill in the details below to publish your job offer.</p>
+        <p className="text-slate-500 mt-1">
+          Fill in the details below to publish your job offer.
+        </p>
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-8 max-w-3xl">
@@ -111,7 +185,9 @@ export default function PostJob() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Job Title */}
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Job Title <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">
+              Job Title <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               name="title"
@@ -125,7 +201,9 @@ export default function PostJob() {
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Category <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">
+              Category <span className="text-red-500">*</span>
+            </label>
             <select
               name="category_id"
               value={form.category_id}
@@ -134,8 +212,10 @@ export default function PostJob() {
               className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
             >
               <option value="">Select category…</option>
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
               ))}
             </select>
           </div>
@@ -143,7 +223,9 @@ export default function PostJob() {
           {/* Contract Type, Experience & Location */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Contract Type <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
+                Contract Type <span className="text-red-500">*</span>
+              </label>
               <select
                 name="contract_type"
                 value={form.contract_type}
@@ -153,14 +235,28 @@ export default function PostJob() {
               >
                 <option value="">Select type…</option>
                 {contractTypes.length > 0
-                  ? contractTypes.map(t => <option key={t} value={t}>{t}</option>)
-                  : ["Full-time", "Part-time", "Contract", "Internship", "Freelance"].map(t => (
-                      <option key={t} value={t}>{t}</option>
+                  ? contractTypes.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))
+                  : [
+                      "Full-time",
+                      "Part-time",
+                      "Contract",
+                      "Internship",
+                      "Freelance",
+                    ].map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
                     ))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Experience <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
+                Experience <span className="text-red-500">*</span>
+              </label>
               <select
                 name="experience_level"
                 value={form.experience_level}
@@ -177,7 +273,9 @@ export default function PostJob() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">City <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
+                City <span className="text-red-500">*</span>
+              </label>
               <select
                 name="city_id"
                 value={form.city_id}
@@ -186,17 +284,55 @@ export default function PostJob() {
                 className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
               >
                 <option value="">Select city…</option>
-                {cities.map(city => (
-                  <option key={city.id} value={city.id}>{city.name}</option>
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.name}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
 
+          {/* Detailed Address */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">
+              Office Address (Optional for Map)
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                name="address"
+                value={form.address}
+                onChange={handleChange}
+                placeholder="e.g. Jemaa el-Fnaa, Marrakech"
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button
+                type="button"
+                onClick={handleVerifyAddress}
+                disabled={verifying}
+                className="px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-xl border border-indigo-100 hover:bg-indigo-100 transition-colors disabled:opacity-50 text-xs shrink-0"
+              >
+                {verifying ? "Verifying..." : "Verify on Map"}
+              </button>
+            </div>
+            {form.latitude && form.longitude && (
+              <p className="mt-2 text-[10px] text-green-600 font-medium">
+                Coordinates captured: {form.latitude.toFixed(4)},{" "}
+                {form.longitude.toFixed(4)}
+              </p>
+            )}
+            <p className="mt-1 text-[10px] text-slate-400">
+              Specify the street address to show an exact pin on the job map.
+            </p>
+          </div>
+
           {/* Salary */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Min Salary (MAD)</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
+                Min Salary (MAD)
+              </label>
               <input
                 type="number"
                 name="salary_min"
@@ -207,7 +343,9 @@ export default function PostJob() {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Max Salary (MAD)</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
+                Max Salary (MAD)
+              </label>
               <input
                 type="number"
                 name="salary_max"
@@ -229,21 +367,36 @@ export default function PostJob() {
               onChange={handleChange}
               className="w-4 h-4 accent-indigo-600"
             />
-            <label htmlFor="is_remote" className="text-sm font-semibold text-slate-700">Remote friendly</label>
+            <label
+              htmlFor="is_remote"
+              className="text-sm font-semibold text-slate-700"
+            >
+              Remote friendly
+            </label>
           </div>
 
           {/* Skills */}
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Required Skills</label>
-            
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Required Skills
+            </label>
+
             {/* Selected Skills Tags */}
             <div className="flex flex-wrap gap-2 mb-3">
-              {form.skills.map(skillName => (
-                <span key={skillName} className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full border border-indigo-100">
+              {form.skills.map((skillName) => (
+                <span
+                  key={skillName}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full border border-indigo-100"
+                >
                   {skillName}
-                  <button 
-                    type="button" 
-                    onClick={() => setForm(prev => ({ ...prev, skills: prev.skills.filter(s => s !== skillName) }))} 
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm((prev) => ({
+                        ...prev,
+                        skills: prev.skills.filter((s) => s !== skillName),
+                      }))
+                    }
                     className="hover:text-indigo-900 focus:outline-none"
                   >
                     &times;
@@ -254,62 +407,89 @@ export default function PostJob() {
 
             {/* Input to type new skill */}
             <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={skillInput}
-                  onChange={(e) => setSkillInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        const val = skillInput.trim();
-                        if (val && !form.skills.includes(val)) {
-                            setForm(prev => ({ ...prev, skills: [...prev.skills, val] }));
-                            setSkillInput("");
-                        }
+              <input
+                type="text"
+                value={skillInput}
+                onChange={(e) => setSkillInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    const val = skillInput.trim();
+                    if (val && !form.skills.includes(val)) {
+                      setForm((prev) => ({
+                        ...prev,
+                        skills: [...prev.skills, val],
+                      }));
+                      setSkillInput("");
                     }
-                  }}
-                  placeholder="e.g. React, CSS, HTML (Press Enter or Add)"
-                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                      const val = skillInput.trim();
-                      if (val && !form.skills.includes(val)) {
-                          setForm(prev => ({ ...prev, skills: [...prev.skills, val] }));
-                          setSkillInput("");
-                      }
-                  }}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
-                >
-                  Add
-                </button>
+                  }
+                }}
+                placeholder="e.g. React, CSS, HTML (Press Enter or Add)"
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const val = skillInput.trim();
+                  if (val && !form.skills.includes(val)) {
+                    setForm((prev) => ({
+                      ...prev,
+                      skills: [...prev.skills, val],
+                    }));
+                    setSkillInput("");
+                  }
+                }}
+                className="px-6 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+              >
+                Add
+              </button>
             </div>
-            
+
             {/* Suggestions */}
-            {skillInput.trim().length > 0 && availableSkills.filter(s => s.name.toLowerCase().includes(skillInput.toLowerCase()) && !form.skills.includes(s.name)).length > 0 && (
+            {skillInput.trim().length > 0 &&
+              availableSkills.filter(
+                (s) =>
+                  s.name.toLowerCase().includes(skillInput.toLowerCase()) &&
+                  !form.skills.includes(s.name),
+              ).length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-2 items-center">
-                    <span className="text-xs font-bold text-slate-400">Suggestions:</span>
-                    {availableSkills.filter(s => s.name.toLowerCase().includes(skillInput.toLowerCase()) && !form.skills.includes(s.name)).slice(0, 5).map(s => (
-                        <button
-                          key={s.id}
-                          type="button"
-                          onClick={() => {
-                              setForm(prev => ({ ...prev, skills: [...prev.skills, s.name] }));
-                              setSkillInput("");
-                          }}
-                          className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-xs font-semibold hover:border-indigo-300 hover:text-indigo-600 transition-colors"
-                        >
-                          + {s.name}
-                        </button>
+                  <span className="text-xs font-bold text-slate-400">
+                    Suggestions:
+                  </span>
+                  {availableSkills
+                    .filter(
+                      (s) =>
+                        s.name
+                          .toLowerCase()
+                          .includes(skillInput.toLowerCase()) &&
+                        !form.skills.includes(s.name),
+                    )
+                    .slice(0, 5)
+                    .map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => {
+                          setForm((prev) => ({
+                            ...prev,
+                            skills: [...prev.skills, s.name],
+                          }));
+                          setSkillInput("");
+                        }}
+                        className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-xs font-semibold hover:border-indigo-300 hover:text-indigo-600 transition-colors"
+                      >
+                        + {s.name}
+                      </button>
                     ))}
                 </div>
-            )}
+              )}
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Job Description <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">
+              Job Description <span className="text-red-500">*</span>
+            </label>
             <textarea
               name="description"
               value={form.description}
@@ -323,7 +503,9 @@ export default function PostJob() {
 
           {/* Requirements */}
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Requirements</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">
+              Requirements
+            </label>
             <textarea
               name="requirements"
               value={form.requirements}

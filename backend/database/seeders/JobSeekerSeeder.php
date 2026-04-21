@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\JobSeeker;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Skill;
 
 class JobSeekerSeeder extends Seeder
 {
@@ -22,13 +23,20 @@ class JobSeekerSeeder extends Seeder
             'role' => 'job_seeker'
         ]);
 
+        $skills = Skill::all();
+
         foreach ($users as $user) {
-            JobSeeker::create([
+            $jobSeeker = JobSeeker::create([
                 'user_id' => $user->id,
                 'specialty' => fake()->randomElement(['Frontend', 'Backend', 'Full Stack']),
                 'experience_level' => fake()->randomElement(['Junior', 'Mid', 'Senior']),
                 'cv_path' => null,
             ]);
+
+            // Attach 4-8 random skills to each job seeker
+            $jobSeeker->skills()->attach(
+                $skills->random(rand(4, 8))->pluck('id')->toArray()
+            );
         }
     }
 }

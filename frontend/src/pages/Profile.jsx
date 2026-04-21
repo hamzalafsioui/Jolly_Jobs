@@ -17,6 +17,9 @@ import {
   GraduationCap,
   Phone,
   MapPin,
+  Bell,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import profileApi from "../api/profile.api";
 import jobApi from "../api/job.api";
@@ -45,6 +48,8 @@ export default function Profile() {
     specialty: "",
     experience_level: "",
     skills: [],
+    notification_settings: { new_application: true, status_update: true, weekly_summary: false },
+    experiences: [],
   });
 
   const [cities, setCities] = useState([]);
@@ -124,6 +129,8 @@ export default function Profile() {
             specialty: user.job_seeker?.specialty || "",
             experience_level: user.job_seeker?.experience_level || "",
             skills: user.job_seeker?.skills?.map((s) => s.id) || [],
+            notification_settings: user.notification_settings || { new_application: true, status_update: true, weekly_summary: false },
+            experiences: user.job_seeker?.experiences || [],
           });
           if (user.job_seeker?.cv_path) {
             setPreview(`${storageBase}/${user.job_seeker.cv_path}`);
@@ -166,6 +173,38 @@ export default function Profile() {
         }
       }
     }
+  };
+
+  const handleAddExperience = () => {
+    setFormData((prev) => ({
+      ...prev,
+      experiences: [
+        ...prev.experiences,
+        {
+          position: "",
+          company_name: "",
+          location: "",
+          start_date: "",
+          end_date: "",
+          description: "",
+        },
+      ],
+    }));
+  };
+
+  const handleRemoveExperience = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      experiences: prev.experiences.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleExperienceChange = (index, field, value) => {
+    setFormData((prev) => {
+      const newExp = [...prev.experiences];
+      newExp[index] = { ...newExp[index], [field]: value };
+      return { ...prev, experiences: newExp };
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -226,7 +265,24 @@ export default function Profile() {
         );
       }
 
+      if (formData.notification_settings) {
+        Object.keys(formData.notification_settings).forEach((key) => {
+          submissionData.append(`notification_settings[${key}]`, formData.notification_settings[key] ? 1 : 0);
+        });
+      }
+
       if (file) submissionData.append("cv", file);
+
+      // Handle experiences array
+      if (Array.isArray(formData.experiences)) {
+        formData.experiences.forEach((exp, index) => {
+          Object.keys(exp).forEach((key) => {
+            if (exp[key] !== null && exp[key] !== undefined && exp[key] !== "") {
+              submissionData.append(`experiences[${index}][${key}]`, exp[key]);
+            }
+          });
+        });
+      }
     }
 
     // Global Fields
@@ -270,7 +326,7 @@ export default function Profile() {
   const isRecruiter = role === "recruiter";
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 space-y-8 animate-fade-in-up">
+    <div className="max-w-4xl mx-auto px-4 py-6 md:py-10 space-y-6 md:space-y-8 animate-fade-in-up">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -310,7 +366,7 @@ export default function Profile() {
 
       <form onSubmit={handleSubmit} className="space-y-8 pb-10">
         {/* Section 1: Personal Details */}
-        <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-8">
+        <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6 md:space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
               <User size={20} />
@@ -461,7 +517,7 @@ export default function Profile() {
         {/* Section 2: Role Specific Data */}
         {isRecruiter ? (
           /* Recruiter Section */
-          <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+          <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-jolly-purple/10 text-jolly-purple rounded-xl flex items-center justify-center">
                 <Building size={20} />
@@ -587,7 +643,7 @@ export default function Profile() {
           </section>
         ) : (
           /* Job Seeker Section */
-          <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+          <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-jolly-teal/10 text-jolly-teal rounded-xl flex items-center justify-center">
                 <GraduationCap size={20} />
@@ -714,19 +770,224 @@ export default function Profile() {
           </section>
         )}
 
+        {/* Section: Work Experiences */}
+        {!isRecruiter && (
+          <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                  <Briefcase size={20} />
+                </div>
+                <h2 className="text-xl font-black text-slate-800">
+                  Work Experiences
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={handleAddExperience}
+                className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-bold text-sm bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-xl transition-all"
+              >
+                <Plus size={16} />
+                Add Experience
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {formData.experiences.length === 0 ? (
+                <div className="text-center py-10 border-2 border-dashed border-slate-100 rounded-3xl">
+                  <p className="text-slate-400 text-sm">No work experiences added yet.</p>
+                </div>
+              ) : (
+                formData.experiences.map((exp, index) => (
+                  <div
+                    key={index}
+                    className="relative p-6 rounded-3xl border border-slate-100 bg-slate-50/30 space-y-4 group transition-all hover:border-indigo-100 hover:bg-white"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveExperience(index)}
+                      className="absolute top-4 right-4 p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Position
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.position}
+                          onChange={(e) =>
+                            handleExperienceChange(index, "position", e.target.value)
+                          }
+                          placeholder="e.g. Senior Software Engineer"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Company
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.company_name}
+                          onChange={(e) =>
+                            handleExperienceChange(index, "company_name", e.target.value)
+                          }
+                          placeholder="e.g. Google"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Location
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.location || ""}
+                          onChange={(e) =>
+                            handleExperienceChange(index, "location", e.target.value)
+                          }
+                          placeholder="e.g. Remote / New York"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Start Date
+                        </label>
+                        <input
+                          type="date"
+                          value={exp.start_date ? exp.start_date.substring(0, 10) : ""}
+                          onChange={(e) =>
+                            handleExperienceChange(index, "start_date", e.target.value)
+                          }
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          End Date (Optional)
+                        </label>
+                        <input
+                          type="date"
+                          value={exp.end_date ? exp.end_date.substring(0, 10) : ""}
+                          onChange={(e) =>
+                            handleExperienceChange(index, "end_date", e.target.value)
+                          }
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                        Description
+                      </label>
+                      <textarea
+                        value={exp.description || ""}
+                        onChange={(e) =>
+                          handleExperienceChange(index, "description", e.target.value)
+                        }
+                        rows={3}
+                        placeholder="Describe your responsibilities and achievements..."
+                        className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm resize-none"
+                      />
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Section 3: Notification Preferences */}
+        {!isRecruiter && (
+          <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+                <Bell size={20} />
+              </div>
+              <h2 className="text-xl font-black text-slate-800">
+                Notification Preferences
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              {[
+                {
+                  key: "status_update",
+                  label: "Status Updates",
+                  desc: "Receive updates when application statuses change.",
+                },
+                {
+                  key: "weekly_summary",
+                  label: "Weekly Summary",
+                  desc: "Get a weekly digest of your hiring activity.",
+                },
+              ].map((item) => (
+                <div
+                  key={item.key}
+                  className="flex items-start justify-between gap-4 py-4 border-b border-slate-50 last:border-0"
+                >
+                  <div>
+                    <p className="font-bold text-sm text-slate-700">
+                      {item.label}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-0.5">{item.desc}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        notification_settings: {
+                          ...prev.notification_settings,
+                          [item.key]: !prev.notification_settings?.[item.key],
+                        },
+                      }))
+                    }
+                    className={`relative inline-flex w-11 h-6 rounded-full transition-colors shrink-0 ${
+                      formData.notification_settings?.[item.key]
+                        ? "bg-jolly-purple"
+                        : "bg-slate-200"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block w-5 h-5 bg-white rounded-full shadow mt-0.5 transition-transform ${
+                        formData.notification_settings?.[item.key]
+                          ? "translate-x-5"
+                          : "translate-x-0.5"
+                      }`}
+                    />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Action Bar */}
-        <div className="flex items-center justify-end gap-3 sticky bottom-8 z-50 py-4 px-6 bg-white/80 backdrop-blur-md rounded-3xl border border-slate-100 shadow-2xl">
+        <div className="flex flex-col sm:flex-row items-center justify-end gap-3 sticky bottom-4 md:bottom-8 z-50 py-4 px-4 md:px-6 bg-white/90 backdrop-blur-md rounded-2xl md:rounded-3xl border border-slate-100 shadow-2xl">
           <button
             type="button"
             onClick={fetchProfile}
-            className="px-6 py-3 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 bg-jolly-purple text-white px-8 py-3 rounded-2xl font-black shadow-lg shadow-jolly-purple/20 hover:bg-jolly-deep-purple transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-jolly-purple text-white px-8 py-3 rounded-2xl font-black shadow-lg shadow-jolly-purple/20 hover:bg-jolly-deep-purple transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {saving ? (
               <Loader2 className="w-4 h-4 animate-spin" />

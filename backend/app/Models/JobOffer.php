@@ -34,6 +34,9 @@ class JobOffer extends Model
         'views_count',
         'applications_count',
         'image_path',
+        'address',
+        'latitude',
+        'longitude',
     ];
 
     public function recruiter(): BelongsTo

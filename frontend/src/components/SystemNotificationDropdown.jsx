@@ -68,6 +68,10 @@ const SystemNotificationDropdown = ({ user, triggerClassName = "" }) => {
     if (notif.type === 'new_application') {
       return '/recruiter/applications';
     }
+    if (notif.type === 'application_status_updated') {
+      const jobId = notif.data?.job_offer_id;
+      return jobId ? `/job/${jobId}` : '/applications';
+    }
     return '#';
   };
 
@@ -109,14 +113,14 @@ const SystemNotificationDropdown = ({ user, triggerClassName = "" }) => {
                 >
                   <div className="flex-1 min-w-0 text-left">
                     <div className="flex justify-between items-start mb-0.5">
-                      <p className="text-sm font-bold text-slate-800 truncate">
+                      <p className="text-sm font-bold text-slate-800">
                         {notif.title}
                       </p>
-                      <span className="text-[10px] text-slate-400 shrink-0">
+                      <span className="text-[10px] text-slate-400 shrink-0 ml-2">
                         {new Date(notif.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 whitespace-nowrap overflow-hidden text-ellipsis">
+                    <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
                       {notif.content}
                     </p>
                   </div>

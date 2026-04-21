@@ -48,6 +48,18 @@ export default function Login({ onBack, onRegisterClick, onLoginSuccess }) {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await authApi.getGoogleAuthUrl();
+      if (response.data?.url) {
+        window.location.href = response.data.url;
+      }
+    } catch (err) {
+      console.error("Google login error:", err);
+      setError("Failed to initialize Google login.");
+    }
+  };
+
   return (
     <div className="h-screen flex bg-white font-body overflow-hidden">
       {/* Left Panel - Branding & Image */}
@@ -214,6 +226,7 @@ export default function Login({ onBack, onRegisterClick, onLoginSuccess }) {
           {/* Social Login */}
           <button
             type="button"
+            onClick={handleGoogleLogin}
             className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 hover:bg-gray-50 text-jolly-navy font-medium py-3 px-4 rounded-button transition-all active:scale-[0.98] text-[15px]"
           >
             <svg

@@ -10,8 +10,14 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
-export default function RecruiterSidebar({ onLogout, user }) {
+export default function RecruiterSidebar({ onLogout, user, isOpen, setIsOpen }) {
   const location = useLocation();
+
+  const handleLinkClick = () => {
+    if (window.innerWidth < 1024) { 
+      setIsOpen(false);
+    }
+  };
 
   const menuItems = [
     { 
@@ -51,7 +57,7 @@ export default function RecruiterSidebar({ onLogout, user }) {
   ];
 
   return (
-    <div className="w-64 bg-[#0f111a] text-gray-400 h-screen flex flex-col fixed left-0 top-0 z-50 border-r border-white/5">
+    <div className={`w-64 bg-[#0f111a] text-gray-400 h-screen flex flex-col fixed left-0 top-0 z-50 border-r border-white/5 transition-transform duration-300 ease-in-out lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
       {/* Logo Area */}
       <div className="p-8">
         <div className="flex items-center gap-3">
@@ -72,6 +78,7 @@ export default function RecruiterSidebar({ onLogout, user }) {
               <Link
                 key={item.name}
                 to={item.path}
+                onClick={handleLinkClick}
                 className="flex items-center gap-3 px-4 py-4 rounded-2xl bg-jolly-purple text-white font-bold transition-all hover:bg-jolly-deep-purple hover:scale-[1.02] active:scale-95 shadow-lg shadow-jolly-purple/20 mb-6 mt-4"
               >
                 {item.icon}
@@ -84,6 +91,7 @@ export default function RecruiterSidebar({ onLogout, user }) {
             <Link
               key={item.name}
               to={item.path}
+              onClick={handleLinkClick}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                 isActive 
                   ? "bg-white/5 text-white font-bold border-l-2 border-jolly-purple rounded-l-none -ml-4 pl-8" 
@@ -105,6 +113,7 @@ export default function RecruiterSidebar({ onLogout, user }) {
           <Link
             key={item.name}
             to={item.path}
+            onClick={handleLinkClick}
             className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-all text-sm mb-4"
           >
             {item.icon}
@@ -115,6 +124,7 @@ export default function RecruiterSidebar({ onLogout, user }) {
         <div className="flex items-center justify-between px-4 py-2 mt-2">
             <Link 
                 to="/recruiter/profile"
+                onClick={handleLinkClick}
                 className="flex items-center gap-3 overflow-hidden group/profile"
             >
                 <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-jolly-purple to-jolly-deep-purple flex items-center justify-center text-white font-black text-sm border-2 border-white/10 shrink-0 group-hover/profile:scale-110 transition-transform">

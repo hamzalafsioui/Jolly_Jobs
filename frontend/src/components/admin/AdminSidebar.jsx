@@ -12,8 +12,14 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
-export default function AdminSidebar({ onLogout, user }) {
+export default function AdminSidebar({ onLogout, user, isOpen, setIsOpen }) {
   const location = useLocation();
+
+  const handleLinkClick = () => {
+    if (window.innerWidth < 1024) { 
+      setIsOpen(false);
+    }
+  };
 
   const menuItems = [
     { 
@@ -47,7 +53,7 @@ export default function AdminSidebar({ onLogout, user }) {
   ];
 
   return (
-    <div className="w-64 bg-[#1e293b] text-slate-300 h-screen flex flex-col fixed left-0 top-0 z-50 border-r border-white/5">
+    <div className={`w-64 bg-[#1e293b] text-slate-300 h-screen flex flex-col fixed left-0 top-0 z-50 border-r border-white/5 transition-transform duration-300 ease-in-out lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
       {/* Logo Area */}
       <div className="p-8">
         <div className="flex items-center gap-3">
@@ -70,6 +76,7 @@ export default function AdminSidebar({ onLogout, user }) {
             <Link
               key={item.name}
               to={item.path}
+              onClick={handleLinkClick}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                 isActive 
                   ? "bg-jolly-purple text-white font-bold shadow-lg shadow-jolly-purple/20" 
@@ -91,6 +98,7 @@ export default function AdminSidebar({ onLogout, user }) {
           <Link
             key={item.name}
             to={item.path}
+            onClick={handleLinkClick}
             className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-all text-sm mb-2"
           >
             {item.icon}

@@ -10,6 +10,9 @@ const TABS = [
 ];
 
 export default function Settings() {
+  const isAdmin = window.location.pathname.startsWith('/admin');
+  const availableTabs = TABS.filter(tab => !(isAdmin && tab.id === "notifications"));
+
   const [activeTab, setActiveTab] = useState("account");
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -18,11 +21,16 @@ export default function Settings() {
   const [account, setAccount] = useState({ first_name: "", last_name: "", email: "", phone: "" });
   const [passwords, setPasswords] = useState({ current_password: "", password: "", password_confirmation: "" });
   const [notifs, setNotifs] = useState({ new_application: true, status_update: true, weekly_summary: false });
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     authApi.getMe().then(res => {
       const u = res.data;
+      setRole(u.role);
       setAccount({ first_name: u.first_name || "", last_name: u.last_name || "", email: u.email || "", phone: u.phone || "" });
+      if (u.notification_settings) {
+        setNotifs(c => ({ ...c, ...u.notification_settings }));
+      }
     }).catch(() => {});
   }, []);
 
@@ -64,6 +72,19 @@ export default function Settings() {
     }
   };
 
+  const handleNotificationSave = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      await client.post("/auth/profile", { notification_settings: notifs });
+      showSuccess();
+    } catch (err) {
+      setError(err?.response?.data?.message || "Failed to save preferences.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <div className="mb-8">
@@ -71,11 +92,11 @@ export default function Settings() {
         <p className="text-slate-500 mt-1">Manage your account preferences.</p>
       </div>
 
-      <div className="flex gap-8">
+      <div className="flex flex-col lg:flex-row gap-8">
         {/* Tab Nav */}
-        <div className="w-52 shrink-0">
-          <nav className="space-y-1">
-            {TABS.map(tab => {
+        <div className="w-full lg:w-52 shrink-0">
+          <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-hide">
+            {availableTabs.map(tab => {
               const Icon = tab.icon;
               return (
                 <button
@@ -94,7 +115,7 @@ export default function Settings() {
         </div>
 
         {/* Tab Content */}
-        <div className="flex-1 max-w-lg">
+        <div className="flex-1 w-full lg:max-w-lg">
           {saved && (
             <div className="mb-4 p-3 bg-green-50 border border-green-100 rounded-xl text-green-600 text-sm font-medium flex items-center gap-2">
               <Save size={14} /> Saved successfully!
@@ -187,14 +208,14 @@ export default function Settings() {
           )}
 
           {/* Notifications Tab */}
-          {activeTab === "notifications" && (
+          {activeTab === "notifications" && !isAdmin && (
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
               <h2 className="font-bold text-slate-800 mb-4">Notification Preferences</h2>
               {[
-                { key: "new_application", label: "New Application", desc: "Get notified when a candidate applies to your job." },
-                { key: "status_update", label: "Status Updates", desc: "Receive updates when application statuses change." },
-                { key: "weekly_summary", label: "Weekly Summary", desc: "Get a weekly digest of your hiring activity." },
-              ].map(item => (
+                { key: "new_application", label: "New Application", desc: "Get notified when a candidate applies to your job.", roles: ['recruiter'] },
+                { key: "status_update", label: "Status Updates", desc: "Receive updates when application statuses change.", roles: ['job_seeker'] },
+                { key: "weekly_summary", label: "Weekly Summary", desc: "Get a weekly digest of your hiring activity.", roles: ['recruiter', 'job_seeker'] },
+              ].filter(item => item.roles.includes(role)).map(item => (
                 <div key={item.key} className="flex items-start justify-between gap-4 py-4 border-b border-slate-50 last:border-0">
                   <div>
                     <p className="font-semibold text-sm text-slate-700">{item.label}</p>
@@ -209,10 +230,11 @@ export default function Settings() {
                 </div>
               ))}
               <button
-                onClick={() => showSuccess()}
-                className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-indigo-700 transition-colors"
+                onClick={handleNotificationSave}
+                disabled={loading}
+                className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-indigo-700 transition-colors disabled:opacity-60"
               >
-                Save Preferences
+                {loading ? "Saving..." : "Save Preferences"}
               </button>
             </div>
           )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { MessageSquare, Send, Search, Loader2, InboxIcon } from "lucide-react";
+import { MessageSquare, Send, Search, Loader2, InboxIcon, ArrowLeft } from "lucide-react";
 import messageApi from "../../api/message.api";
 import echo from "../../echo";
 
@@ -168,11 +168,11 @@ export default function JobSeekerMessages({ currentUser }) {
       </div>
 
       <div
-        className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex"
+        className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex relative"
         style={{ height: "calc(100vh - 240px)", minHeight: 480 }}
       >
         {/* ===== Sidebar ====== */}
-        <div className="w-72 border-r border-slate-100 flex flex-col shrink-0">
+        <div className={`w-full lg:w-72 border-r border-slate-100 flex flex-col shrink-0 ${active && "hidden lg:flex"}`}>
           <div className="p-4 border-b border-slate-100">
             <div className="relative">
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -232,9 +232,16 @@ export default function JobSeekerMessages({ currentUser }) {
 
         {/* ======== Chat Window ======= */}
         {active ? (
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col w-full">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center text-sm">
+              <button 
+                onClick={() => setActive(null)}
+                className="lg:hidden p-2 -ml-2 text-slate-400 hover:text-indigo-600 transition-colors"
+                title="Back to conversations"
+              >
+                <ArrowLeft size={20} />
+              </button>
+              <div className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center text-sm shrink-0">
                 {initials(active.user)}
               </div>
               <div>
@@ -302,7 +309,7 @@ export default function JobSeekerMessages({ currentUser }) {
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center gap-3 text-slate-400">
+          <div className="hidden lg:flex flex-1 flex-col items-center justify-center gap-3 text-slate-400">
             <MessageSquare size={40} strokeWidth={1.5} />
             <p className="text-sm">Select a conversation to reply</p>
           </div>

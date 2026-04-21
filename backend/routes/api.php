@@ -26,11 +26,14 @@ Broadcast::routes(['middleware' => ['auth:sanctum']]);
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/google/url', [AuthController::class, 'getGoogleAuthUrl']);
+    Route::post('/google/callback', [AuthController::class, 'handleGoogleCallback']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
-    
+
     Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth:sanctum');
     Route::post('/profile', [ProfileController::class, 'update'])->middleware('auth:sanctum');
+    Route::get('/job-seekers/{id}', [ProfileController::class, 'showJobSeekerProfil'])->middleware('auth:sanctum');
 });
 
 
@@ -56,6 +59,7 @@ Route::prefix('applications')->middleware('auth:sanctum')->group(function () {
     Route::patch('/{id}/status', [ApplicationController::class, 'updateStatus']);
     Route::get('/job-seeker/{jobSeekerId}', [ApplicationController::class, 'jobSeekerApplications']);
     Route::get('/offer/{jobOfferId}', [ApplicationController::class, 'offerApplications']);
+    Route::get('/{id}/cv', [ApplicationController::class, 'downloadCvFile']);
 });
 
 

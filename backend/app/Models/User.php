@@ -29,6 +29,8 @@ class User extends Authenticatable
         'phone',
         'photo',
         'bio',
+        'google_id',
+        'notification_settings',
     ];
 
     public function city()
@@ -81,6 +83,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notification_settings' => 'array',
         ];
     }
 }

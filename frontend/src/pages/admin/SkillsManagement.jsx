@@ -182,7 +182,7 @@ export default function SkillsManagement() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="w-full text-left min-w-[800px]">
               <thead>
                 <tr className="bg-slate-50/50">
                   <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
