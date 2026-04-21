@@ -18,6 +18,8 @@ import {
   Phone,
   MapPin,
   Bell,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import profileApi from "../api/profile.api";
 import jobApi from "../api/job.api";
@@ -47,6 +49,7 @@ export default function Profile() {
     experience_level: "",
     skills: [],
     notification_settings: { new_application: true, status_update: true, weekly_summary: false },
+    experiences: [],
   });
 
   const [cities, setCities] = useState([]);
@@ -127,6 +130,7 @@ export default function Profile() {
             experience_level: user.job_seeker?.experience_level || "",
             skills: user.job_seeker?.skills?.map((s) => s.id) || [],
             notification_settings: user.notification_settings || { new_application: true, status_update: true, weekly_summary: false },
+            experiences: user.job_seeker?.experiences || [],
           });
           if (user.job_seeker?.cv_path) {
             setPreview(`${storageBase}/${user.job_seeker.cv_path}`);
@@ -169,6 +173,38 @@ export default function Profile() {
         }
       }
     }
+  };
+
+  const handleAddExperience = () => {
+    setFormData((prev) => ({
+      ...prev,
+      experiences: [
+        ...prev.experiences,
+        {
+          position: "",
+          company_name: "",
+          location: "",
+          start_date: "",
+          end_date: "",
+          description: "",
+        },
+      ],
+    }));
+  };
+
+  const handleRemoveExperience = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      experiences: prev.experiences.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleExperienceChange = (index, field, value) => {
+    setFormData((prev) => {
+      const newExp = [...prev.experiences];
+      newExp[index] = { ...newExp[index], [field]: value };
+      return { ...prev, experiences: newExp };
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -236,6 +272,17 @@ export default function Profile() {
       }
 
       if (file) submissionData.append("cv", file);
+
+      // Handle experiences array
+      if (Array.isArray(formData.experiences)) {
+        formData.experiences.forEach((exp, index) => {
+          Object.keys(exp).forEach((key) => {
+            if (exp[key] !== null && exp[key] !== undefined && exp[key] !== "") {
+              submissionData.append(`experiences[${index}][${key}]`, exp[key]);
+            }
+          });
+        });
+      }
     }
 
     // Global Fields
@@ -719,6 +766,145 @@ export default function Profile() {
                   </label>
                 </div>
               </div>
+            </div>
+          </section>
+        )}
+
+        {/* Section: Work Experiences */}
+        {!isRecruiter && (
+          <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                  <Briefcase size={20} />
+                </div>
+                <h2 className="text-xl font-black text-slate-800">
+                  Work Experiences
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={handleAddExperience}
+                className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-bold text-sm bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-xl transition-all"
+              >
+                <Plus size={16} />
+                Add Experience
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {formData.experiences.length === 0 ? (
+                <div className="text-center py-10 border-2 border-dashed border-slate-100 rounded-3xl">
+                  <p className="text-slate-400 text-sm">No work experiences added yet.</p>
+                </div>
+              ) : (
+                formData.experiences.map((exp, index) => (
+                  <div
+                    key={index}
+                    className="relative p-6 rounded-3xl border border-slate-100 bg-slate-50/30 space-y-4 group transition-all hover:border-indigo-100 hover:bg-white"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveExperience(index)}
+                      className="absolute top-4 right-4 p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Position
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.position}
+                          onChange={(e) =>
+                            handleExperienceChange(index, "position", e.target.value)
+                          }
+                          placeholder="e.g. Senior Software Engineer"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Company
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.company_name}
+                          onChange={(e) =>
+                            handleExperienceChange(index, "company_name", e.target.value)
+                          }
+                          placeholder="e.g. Google"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Location
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.location || ""}
+                          onChange={(e) =>
+                            handleExperienceChange(index, "location", e.target.value)
+                          }
+                          placeholder="e.g. Remote / New York"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Start Date
+                        </label>
+                        <input
+                          type="date"
+                          value={exp.start_date ? exp.start_date.substring(0, 10) : ""}
+                          onChange={(e) =>
+                            handleExperienceChange(index, "start_date", e.target.value)
+                          }
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          End Date (Optional)
+                        </label>
+                        <input
+                          type="date"
+                          value={exp.end_date ? exp.end_date.substring(0, 10) : ""}
+                          onChange={(e) =>
+                            handleExperienceChange(index, "end_date", e.target.value)
+                          }
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                        Description
+                      </label>
+                      <textarea
+                        value={exp.description || ""}
+                        onChange={(e) =>
+                          handleExperienceChange(index, "description", e.target.value)
+                        }
+                        rows={3}
+                        placeholder="Describe your responsibilities and achievements..."
+                        className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm resize-none"
+                      />
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </section>
         )}
