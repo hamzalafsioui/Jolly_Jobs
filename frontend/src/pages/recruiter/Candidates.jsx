@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Users, Search, FileText, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import recruiterApi from "../../api/recruiter.api";
 import client from "../../api/client";
 
@@ -205,13 +205,19 @@ export default function Candidates() {
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm shrink-0">
+                      <Link 
+                        to={`/recruiter/job-seekers/${app.job_seeker?.user?.id}`}
+                        className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm shrink-0 hover:bg-indigo-200 transition-colors"
+                      >
                         {initials(app)}
-                      </div>
+                      </Link>
                       <div>
-                        <p className="font-semibold text-slate-800 text-sm">
+                        <Link 
+                          to={`/recruiter/job-seekers/${app.job_seeker?.user?.id}`}
+                          className="font-semibold text-slate-800 text-sm hover:text-indigo-600 transition-colors"
+                        >
                           {candidateName(app)}
-                        </p>
+                        </Link>
                         <p className="text-xs text-slate-400">
                           {app.job_seeker?.user?.email || ""}
                         </p>
