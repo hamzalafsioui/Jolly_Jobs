@@ -42,7 +42,7 @@ class ProfileService
     {
         return DB::transaction(function () use ($user, $data) {
             // Update User table basic info
-            $userFields = ['first_name', 'last_name', 'email', 'city_id', 'phone', 'bio'];
+            $userFields = ['first_name', 'last_name', 'email', 'city_id', 'phone', 'bio', 'notification_settings'];
             $userData = array_intersect_key($data, array_flip($userFields));
             
             if (isset($data['password']) && !empty($data['password'])) {
@@ -127,6 +127,13 @@ class ProfileService
 
         if (isset($data['skills'])) {
             $jobSeeker->skills()->sync($data['skills']);
+        }
+
+        if (isset($data['experiences'])) {
+            $jobSeeker->experiences()->delete();
+            foreach ($data['experiences'] as $expData) {
+                $jobSeeker->experiences()->create($expData);
+            }
         }
     }
 }
