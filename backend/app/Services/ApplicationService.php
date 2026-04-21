@@ -34,19 +34,25 @@ class ApplicationService
             ]);
 
             if ($jobOffer->recruiter && $jobOffer->recruiter->user) {
-                $notification = Notification::create([
-                    'user_id' => $jobOffer->recruiter->user->id,
-                    'type' => 'new_application',
-                    'title' => 'New Job Application',
-                    'content' => "A new candidate applied for your job offer: {$jobOffer->title}.",
-                    'is_read' => false,
-                    'data' => [
-                        'job_offer_id'   => $jobOffer->id,
-                        'application_id' => $application->id,
-                    ],
-                ]);
+                $recruiterUser = $jobOffer->recruiter->user;
+                $prefs = $recruiterUser->notification_settings ?? [];
 
-                broadcast(new NotificationSent($notification));
+                // Only notify if preference is enabled (default to true if not set)
+                if (!isset($prefs['new_application']) || $prefs['new_application']) {
+                    $notification = Notification::create([
+                        'user_id' => $recruiterUser->id,
+                        'type' => 'new_application',
+                        'title' => 'New Job Application',
+                        'content' => "A new candidate applied for your job offer: {$jobOffer->title}.",
+                        'is_read' => false,
+                        'data' => [
+                            'job_offer_id'   => $jobOffer->id,
+                            'application_id' => $application->id,
+                        ],
+                    ]);
+
+                    broadcast(new NotificationSent($notification));
+                }
             }
         }
 
@@ -98,19 +104,24 @@ class ApplicationService
             'rejected'    => "We regret to inform you that your application for {$jobTitle} was not selected at this time.",
         ];
 
-        $notification = Notification::create([
-            'user_id' => $jobSeekerUser->id,
-            'type' => 'application_status_updated',
-            'title' => "Application Update: {$statusLabel}",
-            'content' => $messages[$status] ?? "The status of your application for {$jobTitle} has been updated to {$statusLabel}.",
-            'is_read' => false,
-            'data' => [
-                'job_offer_id' => $application->job_offer_id,
-                'application_id' => $application->id,
-            ],
-        ]);
+        $prefs = $jobSeekerUser->notification_settings ?? [];
 
-        broadcast(new NotificationSent($notification));
+        // Only notify if preference is enabled (default to true if not set)
+        if (!isset($prefs['status_update']) || $prefs['status_update']) {
+            $notification = Notification::create([
+                'user_id' => $jobSeekerUser->id,
+                'type' => 'application_status_updated',
+                'title' => "Application Update: {$statusLabel}",
+                'content' => $messages[$status] ?? "The status of your application for {$jobTitle} has been updated to {$statusLabel}.",
+                'is_read' => false,
+                'data' => [
+                    'job_offer_id' => $application->job_offer_id,
+                    'application_id' => $application->id,
+                ],
+            ]);
+
+            broadcast(new NotificationSent($notification));
+        }
     }
 
     public function getJobSeekerApplications(int $jobSeekerId): Collection
