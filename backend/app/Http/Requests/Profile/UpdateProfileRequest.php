@@ -50,6 +50,14 @@ class UpdateProfileRequest extends FormRequest
             'cv' => ['sometimes', 'nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
             'skills' => ['sometimes', 'nullable', 'array'],
             'skills.*' => ['exists:skills,id'],
+            'notification_settings' => ['sometimes', 'nullable', 'array'],
+            'experiences' => ['sometimes', 'nullable', 'array'],
+            'experiences.*.position' => ['required_with:experiences', 'string', 'max:255'],
+            'experiences.*.company_name' => ['required_with:experiences', 'string', 'max:255'],
+            'experiences.*.location' => ['nullable', 'string', 'max:255'],
+            'experiences.*.start_date' => ['required_with:experiences', 'date'],
+            'experiences.*.end_date' => ['nullable', 'date', 'after_or_equal:experiences.*.start_date'],
+            'experiences.*.description' => ['nullable', 'string'],
         ];
     }
 }
