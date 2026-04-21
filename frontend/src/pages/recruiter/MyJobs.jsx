@@ -103,7 +103,8 @@ export default function MyJobs() {
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          <table className="w-full text-left">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left min-w-[900px]">
             <thead className="bg-slate-50 border-b border-slate-100">
               <tr className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                 <th className="px-6 py-4">Job Title</th>
@@ -189,6 +190,7 @@ export default function MyJobs() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

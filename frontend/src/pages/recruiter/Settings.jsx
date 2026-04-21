@@ -92,10 +92,10 @@ export default function Settings() {
         <p className="text-slate-500 mt-1">Manage your account preferences.</p>
       </div>
 
-      <div className="flex gap-8">
+      <div className="flex flex-col lg:flex-row gap-8">
         {/* Tab Nav */}
-        <div className="w-52 shrink-0">
-          <nav className="space-y-1">
+        <div className="w-full lg:w-52 shrink-0">
+          <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-hide">
             {availableTabs.map(tab => {
               const Icon = tab.icon;
               return (
@@ -115,7 +115,7 @@ export default function Settings() {
         </div>
 
         {/* Tab Content */}
-        <div className="flex-1 max-w-lg">
+        <div className="flex-1 w-full lg:max-w-lg">
           {saved && (
             <div className="mb-4 p-3 bg-green-50 border border-green-100 rounded-xl text-green-600 text-sm font-medium flex items-center gap-2">
               <Save size={14} /> Saved successfully!

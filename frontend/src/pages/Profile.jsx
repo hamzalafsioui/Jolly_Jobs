@@ -326,7 +326,7 @@ export default function Profile() {
   const isRecruiter = role === "recruiter";
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 space-y-8 animate-fade-in-up">
+    <div className="max-w-4xl mx-auto px-4 py-6 md:py-10 space-y-6 md:space-y-8 animate-fade-in-up">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -366,7 +366,7 @@ export default function Profile() {
 
       <form onSubmit={handleSubmit} className="space-y-8 pb-10">
         {/* Section 1: Personal Details */}
-        <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-8">
+        <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6 md:space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
               <User size={20} />
@@ -517,7 +517,7 @@ export default function Profile() {
         {/* Section 2: Role Specific Data */}
         {isRecruiter ? (
           /* Recruiter Section */
-          <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+          <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-jolly-purple/10 text-jolly-purple rounded-xl flex items-center justify-center">
                 <Building size={20} />
@@ -643,7 +643,7 @@ export default function Profile() {
           </section>
         ) : (
           /* Job Seeker Section */
-          <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+          <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-jolly-teal/10 text-jolly-teal rounded-xl flex items-center justify-center">
                 <GraduationCap size={20} />
@@ -772,7 +772,7 @@ export default function Profile() {
 
         {/* Section: Work Experiences */}
         {!isRecruiter && (
-          <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-8">
+          <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
@@ -911,7 +911,7 @@ export default function Profile() {
 
         {/* Section 3: Notification Preferences */}
         {!isRecruiter && (
-          <section className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+          <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
                 <Bell size={20} />
@@ -976,18 +976,18 @@ export default function Profile() {
         )}
 
         {/* Action Bar */}
-        <div className="flex items-center justify-end gap-3 sticky bottom-8 z-50 py-4 px-6 bg-white/80 backdrop-blur-md rounded-3xl border border-slate-100 shadow-2xl">
+        <div className="flex flex-col sm:flex-row items-center justify-end gap-3 sticky bottom-4 md:bottom-8 z-50 py-4 px-4 md:px-6 bg-white/90 backdrop-blur-md rounded-2xl md:rounded-3xl border border-slate-100 shadow-2xl">
           <button
             type="button"
             onClick={fetchProfile}
-            className="px-6 py-3 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 bg-jolly-purple text-white px-8 py-3 rounded-2xl font-black shadow-lg shadow-jolly-purple/20 hover:bg-jolly-deep-purple transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-jolly-purple text-white px-8 py-3 rounded-2xl font-black shadow-lg shadow-jolly-purple/20 hover:bg-jolly-deep-purple transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {saving ? (
               <Loader2 className="w-4 h-4 animate-spin" />

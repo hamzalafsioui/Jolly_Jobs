@@ -79,7 +79,7 @@ export default function AdminDashboard() {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-2xl font-black text-slate-900">Dashboard Overview</h1>
-          <p className="text-slate-500 mt-1">Real-time platform metrics and activity.</p>
+          <p className="text-slate-500 mt-1">Real time platform metrics and activity.</p>
         </div>
         <button 
           onClick={fetchStats}
@@ -97,7 +97,7 @@ export default function AdminDashboard() {
               <div className={`w-12 h-12 rounded-2xl ${card.color} flex items-center justify-center transition-transform group-hover:scale-110`}>
                 {card.icon}
               </div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-lg">Live</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/0 px-2 py-1 rounded-lg"></span>
             </div>
             <h3 className="text-3xl font-black text-slate-900">{card.value}</h3>
             <p className="text-slate-500 text-sm font-medium">{card.label}</p>
