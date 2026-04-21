@@ -33,6 +33,7 @@ Route::prefix('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth:sanctum');
     Route::post('/profile', [ProfileController::class, 'update'])->middleware('auth:sanctum');
+    Route::get('/job-seekers/{id}', [ProfileController::class, 'showJobSeekerProfil'])->middleware('auth:sanctum');
 });
 
 
