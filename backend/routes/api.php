@@ -23,7 +23,8 @@ Route::get('/user', function (Request $request) {
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
-Route::prefix('auth')->group(function () {
+// Auth => rate limiting (10 req/min per IP)
+Route::prefix('auth')->middleware('throttle:auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/google/url', [AuthController::class, 'getGoogleAuthUrl']);
@@ -39,7 +40,7 @@ Route::prefix('auth')->group(function () {
 
 
 // User Management
-Route::apiResource('users', UserController::class)->middleware('auth:sanctum');
+Route::apiResource('users', UserController::class)->middleware(['auth:sanctum', 'throttle:api']);
 
 
 // Job Offers
