@@ -1,0 +1,209 @@
+name: jolly-jobs
+
+# ============================
+# Shared network
+# ============================
+networks:
+  jolly-network:
+    driver: bridge
+
+# ==============
+# Named volumes
+# ===============
+volumes:
+  postgres-data:
+  redis-data:
+  storage-data:
+
+# ======================
+# Services
+# =======================
+services:
+
+  # ========== PostgreSQL ==========
+  db:
+    image: postgres:16-alpine
+    container_name: jolly-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${DB_DATABASE:-jolly_jobs}
+      POSTGRES_USER:     ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - jolly-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-jolly_jobs}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========== Redis ========== 
+  redis:
+    image: redis:7-alpine
+    container_name: jolly-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - jolly-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ========== Laravel Backend (PHP-FPM)========== 
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+      target: app
+    container_name: jolly-backend
+    restart: unless-stopped
+    env_file:
+      - backend/.env
+    environment:
+      # Override host values to point at Docker service names
+      DB_HOST:      db
+      DB_PORT:      5432
+      DB_DATABASE:  ${DB_DATABASE:-jolly_jobs}
+      DB_USERNAME:  ${DB_USERNAME:-postgres}
+      DB_PASSWORD:  ${DB_PASSWORD:-secret}
+      REDIS_HOST:   redis
+      REDIS_PORT:   6379
+      REVERB_HOST:  reverb
+      REVERB_PORT:  8080
+    volumes:
+      - ./backend:/var/www/html                      # live source mount (dev)
+      - storage-data:/var/www/html/storage/app       # persist uploads
+      - /var/www/html/vendor                         # keep vendor from image
+      - /var/www/html/bootstrap/cache                # keep cache from image
+    depends_on:
+      - db
+      - redis
+      - reverb
+    networks:
+      - jolly-network
+
+  # ========== Nginx (web server) ==========
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    container_name: jolly-nginx
+    restart: unless-stopped
+    ports:
+      - "8001:80"
+    volumes:
+      - ./backend:/var/www/html:ro      # Nginx reads public/ directory
+    depends_on:
+      - backend
+    networks:
+      - jolly-network
+
+  # ==================Laravel Reverb (WebSockets)=================== 
+  reverb:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+      target: app
+    container_name: jolly-reverb
+    restart: unless-stopped
+    command: ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080", "--no-interaction"]
+    env_file:
+      - backend/.env
+    environment:
+      DB_HOST:     db
+      DB_PORT:     5432
+      DB_DATABASE: ${DB_DATABASE:-jolly_jobs}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+      REDIS_HOST:  redis
+      REDIS_PORT:  6379
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+    volumes:
+      - ./backend:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/bootstrap/cache
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jolly-network
+
+  # ========== Laravel Queue Worker ========== 
+  queue:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+      target: app
+    container_name: jolly-queue
+    restart: unless-stopped
+    command: ["php", "artisan", "queue:work", "--tries=3", "--timeout=90", "--sleep=3"]
+    env_file:
+      - backend/.env
+    environment:
+      DB_HOST:    db
+      DB_PORT:    5432
+      DB_DATABASE: ${DB_DATABASE:-jolly_jobs}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+    volumes:
+      - ./backend:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/bootstrap/cache
+    depends_on:
+      - db
+      - redis
+      - reverb
+    networks:
+      - jolly-network
+
+  # =========== React Frontend (Vite dev server) ============
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+      target: dev
+    container_name: jolly-frontend
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/app                # HMR via live mount
+      - /app/node_modules              # keep image node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL:    http://localhost:8001/api
+      VITE_REVERB_HOST:     localhost
+      VITE_REVERB_PORT:     8080
+      VITE_REVERB_APP_KEY:  ${REVERB_APP_KEY:-4auahs5h7lh3yr9bfyxt}
+      VITE_REVERB_SCHEME:   http
+    networks:
+      - jolly-network
+
+  # ======================= Mailpit (local email testing) ===================
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: jolly-mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"   # Web UI
+      - "1025:1025"   # SMTP
+    networks:
+      - jolly-network
