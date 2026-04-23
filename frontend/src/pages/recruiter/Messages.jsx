@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { MessageSquare, Send, Search, Loader2, Users, ArrowLeft } from "lucide-react";
+import {
+  MessageSquare,
+  Send,
+  Search,
+  Loader2,
+  Users,
+  ArrowLeft,
+} from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import messageApi from "../../api/message.api";
 import echo from "../../echo";
@@ -15,7 +22,8 @@ function timeLabel(iso) {
   const d = new Date(iso);
   const now = new Date();
   const diffH = (now - d) / 3600000;
-  if (diffH < 24) return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  if (diffH < 24)
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   if (diffH < 48) return "Yesterday";
   return d.toLocaleDateString([], { day: "2-digit", month: "short" });
 }
@@ -44,22 +52,22 @@ export default function RecruiterMessages({ currentUser }) {
         if (res.success) {
           let convs = res.data;
           const newContact = location.state?.newContact;
-          
+
           if (newContact) {
             // Check if it already exists
-            const existsInfo = convs.find(c => c.user.id === newContact.id);
+            const existsInfo = convs.find((c) => c.user.id === newContact.id);
             if (!existsInfo) {
               const dummyConv = {
                 user: newContact,
                 last_message: null,
-                unread_count: 0
+                unread_count: 0,
               };
               convs = [dummyConv, ...convs];
             }
-            
+
             setConversations(convs);
             selectConversation(existsInfo || convs[0]);
-            
+
             // Clear the state so refreshing doesn't do it again
             navigate(location.pathname, { replace: true, state: {} });
           } else {
@@ -93,33 +101,61 @@ export default function RecruiterMessages({ currentUser }) {
 
       if (activeIdRef.current === partnerId) {
         setMessages((prev) => {
-          if (prev.find(m => m.id === e.id)) return prev;
+          if (prev.find((m) => m.id === e.id)) return prev;
           return [...prev, e];
         });
         messageApi.markRead(partnerId);
-        
+
         setConversations((prev) => {
-          const exists = prev.find(c => c.user.id === partnerId);
+          const exists = prev.find((c) => c.user.id === partnerId);
           if (exists) {
-            return prev.map(c => 
+            return prev.map((c) =>
               c.user.id === partnerId
-                ? { ...c, last_message: { content: e.content, created_at: e.created_at }, unread_count: 0 }
-                : c
+                ? {
+                    ...c,
+                    last_message: {
+                      content: e.content,
+                      created_at: e.created_at,
+                    },
+                    unread_count: 0,
+                  }
+                : c,
             );
           }
-          return [{ user: e.sender, last_message: { content: e.content, created_at: e.created_at }, unread_count: 0 }, ...prev];
+          return [
+            {
+              user: e.sender,
+              last_message: { content: e.content, created_at: e.created_at },
+              unread_count: 0,
+            },
+            ...prev,
+          ];
         });
       } else {
         setConversations((prev) => {
-          const exists = prev.find(c => c.user.id === partnerId);
+          const exists = prev.find((c) => c.user.id === partnerId);
           if (exists) {
-            return prev.map(c => 
+            return prev.map((c) =>
               c.user.id === partnerId
-                ? { ...c, last_message: { content: e.content, created_at: e.created_at }, unread_count: c.unread_count + 1 }
-                : c
+                ? {
+                    ...c,
+                    last_message: {
+                      content: e.content,
+                      created_at: e.created_at,
+                    },
+                    unread_count: c.unread_count + 1,
+                  }
+                : c,
             );
           }
-          return [{ user: e.sender, last_message: { content: e.content, created_at: e.created_at }, unread_count: 1 }, ...prev];
+          return [
+            {
+              user: e.sender,
+              last_message: { content: e.content, created_at: e.created_at },
+              unread_count: 1,
+            },
+            ...prev,
+          ];
         });
       }
     });
@@ -147,7 +183,9 @@ export default function RecruiterMessages({ currentUser }) {
     messageApi.markRead(partnerId).then((res) => {
       if (res.success) {
         setConversations((prev) =>
-          prev.map((c) => (c.user.id === partnerId ? { ...c, unread_count: 0 } : c))
+          prev.map((c) =>
+            c.user.id === partnerId ? { ...c, unread_count: 0 } : c,
+          ),
         );
       }
     });
@@ -158,9 +196,16 @@ export default function RecruiterMessages({ currentUser }) {
     setConversations((prev) =>
       prev.map((c) =>
         c.user.id === partnerId
-          ? { ...c, last_message: { content: msg.content, created_at: msg.created_at }, unread_count: 0 }
-          : c
-      )
+          ? {
+              ...c,
+              last_message: {
+                content: msg.content,
+                created_at: msg.created_at,
+              },
+              unread_count: 0,
+            }
+          : c,
+      ),
     );
   }
 
@@ -193,9 +238,10 @@ export default function RecruiterMessages({ currentUser }) {
     }
   };
 
-  const filtered = conversations.filter(
-    (c) =>
-      `${c.user.first_name} ${c.user.last_name}`.toLowerCase().includes(search.toLowerCase())
+  const filtered = conversations.filter((c) =>
+    `${c.user.first_name} ${c.user.last_name}`
+      .toLowerCase()
+      .includes(search.toLowerCase()),
   );
 
   /* ================ render =============== */
@@ -211,10 +257,15 @@ export default function RecruiterMessages({ currentUser }) {
         style={{ height: "calc(100vh - 220px)", minHeight: 480 }}
       >
         {/* ======== Sidebar ======== */}
-        <div className={`w-full lg:w-72 border-r border-slate-100 flex flex-col shrink-0 ${active && "hidden lg:flex"}`}>
+        <div
+          className={`w-full lg:w-72 border-r border-slate-100 flex flex-col shrink-0 ${active && "hidden lg:flex"}`}
+        >
           <div className="p-4 border-b border-slate-100">
             <div className="relative">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search
+                size={14}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              />
               <input
                 type="text"
                 value={search}
@@ -256,7 +307,9 @@ export default function RecruiterMessages({ currentUser }) {
                         {timeLabel(conv.last_message?.created_at)}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 truncate">{conv.last_message?.content ?? ""}</p>
+                    <p className="text-xs text-slate-400 truncate">
+                      {conv.last_message?.content ?? ""}
+                    </p>
                   </div>
                   {conv.unread_count > 0 && (
                     <span className="shrink-0 w-5 h-5 bg-indigo-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -274,7 +327,7 @@ export default function RecruiterMessages({ currentUser }) {
           <div className="flex-1 flex flex-col w-full">
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-3">
-              <button 
+              <button
                 onClick={() => setActive(null)}
                 className="lg:hidden p-2 -ml-2 text-slate-400 hover:text-indigo-600 transition-colors"
                 title="Back to conversations"
@@ -288,7 +341,9 @@ export default function RecruiterMessages({ currentUser }) {
                 <p className="font-semibold text-sm text-slate-800">
                   {active.user.first_name} {active.user.last_name}
                 </p>
-                <p className="text-xs text-slate-400 capitalize">{active.user.role?.replace("_", " ")}</p>
+                <p className="text-xs text-slate-400 capitalize">
+                  {active.user.role?.replace("_", " ")}
+                </p>
               </div>
             </div>
 
@@ -307,7 +362,10 @@ export default function RecruiterMessages({ currentUser }) {
                 messages.map((msg) => {
                   const isMine = msg.sender_id === currentUser?.id;
                   return (
-                    <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+                    <div
+                      key={msg.id}
+                      className={`flex ${isMine ? "justify-end" : "justify-start"}`}
+                    >
                       <div
                         className={`max-w-xs px-4 py-2.5 rounded-2xl text-sm ${
                           isMine
@@ -316,7 +374,9 @@ export default function RecruiterMessages({ currentUser }) {
                         }`}
                       >
                         <p>{msg.content}</p>
-                        <p className={`text-[10px] mt-1 ${isMine ? "text-indigo-200" : "text-slate-400"}`}>
+                        <p
+                          className={`text-[10px] mt-1 ${isMine ? "text-indigo-200" : "text-slate-400"}`}
+                        >
                           {timeLabel(msg.created_at)}
                         </p>
                       </div>
@@ -343,7 +403,11 @@ export default function RecruiterMessages({ currentUser }) {
                   disabled={sending || !input.trim()}
                   className="bg-indigo-600 text-white px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition-colors flex items-center gap-2 text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {sending ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
+                  {sending ? (
+                    <Loader2 size={15} className="animate-spin" />
+                  ) : (
+                    <Send size={15} />
+                  )}
                   Send
                 </button>
               </div>
