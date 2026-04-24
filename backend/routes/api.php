@@ -57,6 +57,7 @@ Route::apiResource('job-offers', JobOfferController::class)->except(['index', 's
 Route::prefix('applications')->middleware('auth:sanctum')->group(function () {
     Route::post('/apply/{jobOfferId?}', [ApplicationController::class, 'apply']);
     Route::get('/{id}', [ApplicationController::class, 'show']);
+    Route::delete('/{id}', [ApplicationController::class, 'destroy']);
     Route::patch('/{id}/status', [ApplicationController::class, 'updateStatus']);
     Route::get('/job-seeker/{jobSeekerId}', [ApplicationController::class, 'jobSeekerApplications']);
     Route::get('/offer/{jobOfferId}', [ApplicationController::class, 'offerApplications']);
