@@ -52,4 +52,20 @@ class ApplicationPolicy
 
         return false;
     }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, Application $application): bool
+    {
+        if ($user->role === 'admin') {
+            return true;
+        }
+
+        if ($user->role === 'job_seeker' && $user->jobSeeker) {
+            return $user->jobSeeker->id === $application->job_seeker_id;
+        }
+
+        return false;
+    }
 }
