@@ -11,7 +11,8 @@ const NotificationDropdown = ({ user, triggerClassName = "" }) => {
   const seenMessageIds = useRef(new Set());
   const notifDropdownRef = useRef(null);
 
-  const messagesPath = user?.role === "recruiter" ? "/recruiter/messages" : "/messages";
+  const messagesPath =
+    user?.role === "recruiter" ? "/recruiter/messages" : "/messages";
 
   useEffect(() => {
     if (user) {
@@ -40,7 +41,10 @@ const NotificationDropdown = ({ user, triggerClassName = "" }) => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (notifDropdownRef.current && !notifDropdownRef.current.contains(event.target)) {
+      if (
+        notifDropdownRef.current &&
+        !notifDropdownRef.current.contains(event.target)
+      ) {
         setIsNotifOpen(false);
       }
     };
@@ -51,7 +55,7 @@ const NotificationDropdown = ({ user, triggerClassName = "" }) => {
   const toggleNotifications = () => {
     const newState = !isNotifOpen;
     setIsNotifOpen(newState);
-    
+
     // Recalculate/refresh on open
     if (newState) {
       messageApi.getUnreadCount().then((res) => {
@@ -113,7 +117,9 @@ const NotificationDropdown = ({ user, triggerClassName = "" }) => {
                       </p>
                       <span className="text-[10px] text-slate-400 shrink-0">
                         {conv.last_message
-                          ? new Date(conv.last_message.created_at).toLocaleTimeString([], {
+                          ? new Date(
+                              conv.last_message.created_at,
+                            ).toLocaleTimeString([], {
                               hour: "2-digit",
                               minute: "2-digit",
                             })

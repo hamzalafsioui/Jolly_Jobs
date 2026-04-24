@@ -1,0 +1,36 @@
+name: jolly-jobs
+
+# Production overrides — replaces dev Vite server with pre-built static Nginx
+services:
+
+  # ========== Backend: disable volume source mount, use image only ============
+  backend:
+    volumes:
+      - storage-data:/var/www/html/storage/app
+
+  # ========== Reverb: same as backend ============
+  reverb:
+    volumes: []
+
+  # ========== Queue: same ===========================
+  queue:
+    volumes: []
+
+  # ========== Nginx: no source mount needed (baked in) ==========
+  nginx:
+    volumes: []
+
+  # ── Frontend: serve built static assets via Nginx ─────────
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+      target: prod
+    environment:
+      # These are baked into the build; set them via .env before building
+      VITE_API_BASE_URL:   ${VITE_API_BASE_URL:-http://your-domain.com/api}
+      VITE_REVERB_HOST:    ${VITE_REVERB_HOST:-your-domain.com}
+      VITE_REVERB_PORT:    ${VITE_REVERB_PORT:-8080}
+      VITE_REVERB_APP_KEY: ${REVERB_APP_KEY}
+      VITE_REVERB_SCHEME:  ${VITE_REVERB_SCHEME:-https}
+    volumes: []

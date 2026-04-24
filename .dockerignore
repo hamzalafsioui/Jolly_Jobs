@@ -1,0 +1,14 @@
+.git
+.vscode
+.idea
+node_modules/
+vendor/
+public/build/
+public/hot
+storage/
+bootstrap/cache/
+*.log
+.env
+.env.*
+!.env.docker
+docker-compose.override.yml

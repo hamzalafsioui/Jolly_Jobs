@@ -10,6 +10,8 @@ use App\Services\ProfileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Exception;
+use App\Models\User;
+
 class ProfileController extends Controller
 {
     public function __construct(
@@ -23,6 +25,25 @@ class ProfileController extends Controller
     {
         try {
             $user = $request->user();
+            $profile = $this->profileService->getProfile($user);
+            return ApiResponse::success(new UserResource($profile));
+        } catch (Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
+    }
+
+    /**
+     * Get a public job seeker profile (for recruiters)
+     */
+    public function showJobSeekerProfil(int $id): JsonResponse
+    {
+        try {
+            $user = User::findOrFail($id);
+            
+            if ($user->role !== 'job_seeker') {
+                return ApiResponse::error('Not a job seeker profile.', 404);
+            }
+
             $profile = $this->profileService->getProfile($user);
             return ApiResponse::success(new UserResource($profile));
         } catch (Exception $e) {

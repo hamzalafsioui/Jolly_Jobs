@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->json('notification_settings')->nullable()->after('bio')->default(['status_update' => true, 'weekly_summary' => true]);
+            $table->json('notification_settings')->nullable()->after('bio')->default(json_encode(['status_update' => true, 'weekly_summary' => true]));
         });
     }
 

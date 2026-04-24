@@ -87,11 +87,17 @@ class AuthController extends Controller
     public function handleGoogleCallback(Request $request): JsonResponse
     {
         try {
-            $googleUser = Socialite::driver('google')
+            $driver = Socialite::driver('google')
                 ->stateless()
-                ->setHttpClient(new Client(['verify' => false]))
-                ->redirectUrl(config('services.google.redirect'))
-                ->user();
+                ->redirectUrl(config('services.google.redirect'));
+
+            // On local dev => PHP often lacks a CA bundle for SSL verification.
+            // Disable only in local  always verified in production.
+            if (app()->environment('local')) {
+                $driver->setHttpClient(new Client(['verify' => false]));
+            }
+
+            $googleUser = $driver->user();
             
             $user = User::where('google_id', $googleUser->id)->orWhere('email', $googleUser->email)->first();
             
@@ -144,10 +150,9 @@ class AuthController extends Controller
         } catch (Exception $e) {
             Log::error('Google Auth Error: ' . $e->getMessage(), [
                 'exception' => $e,
-                'request' => $request->all()
             ]);
-            
-            return ApiResponse::unauthorized('Failed to authenticate with Google: ' . $e->getMessage());
+
+            return ApiResponse::unauthorized('Failed to authenticate with Google. Please try again.');
         }
     }
 }
