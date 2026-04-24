@@ -26,6 +26,7 @@ export default function JobDetails({ onBack }) {
   const [isSaved, setIsSaved] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
+  const [applicationId, setApplicationId] = useState(null);
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [coverLetter, setCoverLetter] = useState("");
   const [error, setError] = useState(null);
@@ -39,6 +40,7 @@ export default function JobDetails({ onBack }) {
             setJob(res.data);
             setIsSaved(res.data.is_saved || false);
             setIsApplied(res.data.is_applied || false);
+            setApplicationId(res.data.user_application_id || null);
           }
         })
         .finally(() => setLoading(false));
@@ -78,6 +80,7 @@ export default function JobDetails({ onBack }) {
         
         if (res.success) {
             setIsApplied(true);
+            setApplicationId(res.data?.id);
             setShowApplyModal(false);
             
             setJob(prev => ({...prev, applications_count: (prev.applications_count || 0) + 1}));
@@ -87,6 +90,26 @@ export default function JobDetails({ onBack }) {
         setError(err.response?.data?.message || "Something went wrong. Please check if you have a CV in your profile.");
     } finally {
         setIsApplying(false);
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (!applicationId) return;
+    
+    if (!window.confirm("Are You Sure Do You Want to Do This Action ?")) {
+      return;
+    }
+
+    try {
+      const res = await jobApi.withdrawApplication(applicationId);
+      if (res.success) {
+        setIsApplied(false);
+        setApplicationId(null);
+        setJob(prev => ({...prev, applications_count: Math.max(0, (prev.applications_count || 0) - 1)}));
+      }
+    } catch (err) {
+      console.error("Failed to withdraw application", err);
+      alert("Failed to withdraw application. Please try again.");
     }
   };
 
@@ -151,9 +174,12 @@ export default function JobDetails({ onBack }) {
           
           <div className="mt-6 md:mt-0 flex items-center gap-4">
              {isApplied ? (
-               <div className="bg-green-50 text-green-600 px-8 py-3 rounded-xl font-bold font-heading flex items-center border border-green-100">
-                 <CheckCircle size={20} className="mr-2" /> Applied
-               </div>
+               <button 
+                 onClick={handleWithdraw}
+                 className="bg-red-50 text-red-600 px-8 py-3 rounded-xl font-bold font-heading flex items-center border border-red-100 hover:bg-red-100 transition-colors"
+               >
+                 <X size={20} className="mr-2" /> Retirer la candidature
+               </button>
              ) : (
                <button 
                  onClick={() => {
@@ -261,9 +287,12 @@ export default function JobDetails({ onBack }) {
           <div className="w-full lg:w-1/3 space-y-6">
              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                {isApplied ? (
-                 <div className="bg-green-50 text-green-600 w-full py-4 rounded-xl font-bold font-heading flex justify-center items-center border border-green-100 shadow-sm">
-                   <CheckCircle size={20} className="mr-2" /> You have applied
-                 </div>
+                 <button 
+                   onClick={handleWithdraw}
+                   className="bg-red-50 hover:bg-red-100 transition-colors text-red-600 w-full py-4 rounded-xl font-bold font-heading flex justify-center items-center border border-red-100 shadow-sm"
+                 >
+                   <X size={20} className="mr-2" /> Retirer la candidature
+                 </button>
                ) : (
                  <button 
                    onClick={() => {
