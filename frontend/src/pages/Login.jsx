@@ -63,7 +63,7 @@ export default function Login({ onBack, onRegisterClick, onLoginSuccess }) {
   return (
     <div className="h-screen flex bg-white font-body overflow-hidden">
       {/* Left Panel - Branding & Image */}
-      <div className="hidden lg:flex lg:w-1/2 bg-[#00ff41] p-12 flex-col justify-between text-white relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-jolly-purple p-12 flex-col justify-between text-white relative overflow-hidden">
         {/* Logo */}
         <div
           className="z-10 cursor-pointer hover:opacity-80 transition-opacity"
@@ -72,7 +72,7 @@ export default function Login({ onBack, onRegisterClick, onLoginSuccess }) {
             if (onBack) onBack();
           }}
         >
-          <Logo className="text-3xl md:text-4xl pointer-events-none" />
+          <Logo className="text-3xl md:text-4xl pointer-events-none" variant="white" />
         </div>
 
         {/* Center Content */}
