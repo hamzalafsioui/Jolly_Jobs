@@ -51,33 +51,33 @@ class JobOfferSeeder extends Seeder
 
         $skills = Skill::all();
 
-        foreach (range(1, 40) as $index) {
+        foreach (range(1, 50) as $index) {
             $title = Arr::random($jobTitles);
             $contractType = Arr::random(JobOffer::CONTRACT_TYPES);
             $city = $cities->random();
             $category = $categories->random();
             $recruiter = $recruiters->random();
-            $isRemote = fake()->boolean(20); // 20% chance of remote
+            $isRemote = fake()->boolean(30); // 30% chance of remote
 
             $jobOffer = JobOffer::create([
                 'recruiter_id' => $recruiter->id,
                 'category_id' => $category->id,
                 'city_id' => $city->id,
                 'title' => $title,
-                'description' => fake()->paragraphs(3, true),
+                'description' => fake()->paragraphs(5, true),
                 'contract_type' => $contractType,
-                'salary_min' => fake()->numberBetween(30, 60),
-                'salary_max' => fake()->numberBetween(70, 120),
+                'salary_min' => fake()->numberBetween(35, 65),
+                'salary_max' => fake()->numberBetween(70, 150),
                 'remote' => $isRemote,
-                'experience_level' => fake()->randomElement(['Junior', 'Intermediate', 'Senior', 'Expert']),
+                'experience_level' => fake()->randomElement(['Junior (0-2 years)', 'Mid-Level (3-5 years)', 'Senior (5+ years)', 'Expert (10+ years)']),
                 'status' => 'active',
-                'views_count' => fake()->numberBetween(0, 500),
-                'applications_count' => fake()->numberBetween(0, 50),
+                'views_count' => fake()->numberBetween(50, 1500),
+                'applications_count' => fake()->numberBetween(5, 80),
             ]);
 
             // Attach 3-6 random skills to each job offer
             $jobOffer->skills()->attach(
-                $skills->random(rand(3, 6))->pluck('id')->toArray()
+                $skills->random(rand(5, 8))->pluck('id')->toArray()
             );
         }
     }
