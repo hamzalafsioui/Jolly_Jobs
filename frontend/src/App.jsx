@@ -31,6 +31,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import UsersManagement from "./pages/admin/UsersManagement";
 import JobsManagement from "./pages/admin/JobsManagement";
 import SkillsManagement from "./pages/admin/SkillsManagement";
+import CitiesManagement from "./pages/admin/CitiesManagement";
 import Logo from "./components/Logo";
 import echo from "./echo";
 import "./App.css";
@@ -39,8 +40,6 @@ function App() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const [backendData, setBackendData] = useState(null);
-  const [error, setError] = useState(null);
   const [searchFilters, setSearchFilters] = useState({});
 
   // Check for existing login & fetch profile
@@ -123,6 +122,7 @@ function App() {
           <Route path="/admin/users" element={<UsersManagement />} />
           <Route path="/admin/jobs" element={<JobsManagement />} />
           <Route path="/admin/skills" element={<SkillsManagement />} />
+          <Route path="/admin/cities" element={<CitiesManagement />} />
           <Route path="/admin/settings" element={<Settings />} />
 
           <Route
