@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Broadcast;
+use App\Http\Controllers\Api\CityController;
 
 
 Route::get('/user', function (Request $request) {
@@ -69,6 +70,7 @@ Route::prefix('applications')->middleware('auth:sanctum')->group(function () {
 Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'getStats']);
     Route::apiResource('skills', SkillController::class);
+    Route::apiResource('cities', CityController::class);
 });
 
 // Recruiter Dashboard
