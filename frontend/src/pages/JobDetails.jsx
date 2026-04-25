@@ -317,9 +317,9 @@ export default function JobDetails({ onBack }) {
                 <div className="flex items-center mb-5">
                   <div className="w-12 h-12 bg-[#0f172a] rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-inner overflow-hidden">
                     {job.recruiter?.logo ? (
-                      <img src={`${storageBase}/${job.recruiter.logo}`} alt="" className="w-full h-full object-cover" />
+                      <img src={job.recruiter.logo} alt="" className="w-full h-full object-cover" />
                     ) : job.recruiter?.photo ? (
-                      <img src={`${storageBase}/${job.recruiter.photo}`} alt="" className="w-full h-full object-cover" />
+                      <img src={job.recruiter.photo} alt="" className="w-full h-full object-cover" />
                     ) : (
                       companyName.charAt(0)
                     )}
