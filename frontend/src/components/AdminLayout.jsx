@@ -35,17 +35,14 @@ export default function AdminLayout({ children, user, onLogout }) {
                   {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
 
-                <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-jolly-purple animate-pulse"></span>
-                    <h2 className="text-lg font-bold text-slate-800">Admin Panel</h2>
-                </div>
+                
             </div>
             
             <div className="flex items-center gap-6">
                 <div className="flex items-center gap-3">
                     <div className="text-right hidden sm:block">
                         <p className="text-sm font-bold text-slate-800 leading-none">{user?.name || "Administrator"}</p>
-                        <p className="text-[11px] text-jolly-purple font-bold mt-1 uppercase tracking-tighter">Super Admin</p>
+                        
                     </div>
                 </div>
             </div>
