@@ -91,6 +91,37 @@ const adminApi = {
     const response = await client.delete(`/admin/skills/${id}`);
     return response.data;
   },
+  /**
+   * Get all cities
+   */
+  getCities: async () => {
+    const response = await client.get("/admin/cities");
+    return response.data;
+  },
+
+  /**
+   * Create a new city
+   */
+  createCity: async (data) => {
+    const response = await client.post("/admin/cities", data);
+    return response.data;
+  },
+
+  /**
+   * Update an existing city
+   */
+  updateCity: async (id, data) => {
+    const response = await client.put(`/admin/cities/${id}`, data);
+    return response.data;
+  },
+
+  /**
+   * Delete a city
+   */
+  deleteCity: async (id) => {
+    const response = await client.delete(`/admin/cities/${id}`);
+    return response.data;
+  },
 };
 
 export default adminApi;
