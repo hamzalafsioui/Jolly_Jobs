@@ -8,7 +8,8 @@ import {
   ShieldCheck,
   BarChart3,
   FileText,
-  Tag
+  Tag,
+  MapPin
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -41,6 +42,11 @@ export default function AdminSidebar({ onLogout, user, isOpen, setIsOpen }) {
       name: "Manage Skills", 
       icon: <Tag size={20} />, 
       path: "/admin/skills" 
+    },
+    { 
+      name: "Manage Cities", 
+      icon: <MapPin size={20} />, 
+      path: "/admin/cities" 
     },
   ];
 
