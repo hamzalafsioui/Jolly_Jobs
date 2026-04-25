@@ -95,8 +95,7 @@ export default function Profile() {
         const user = res.data;
         setRole(user.role);
 
-        const storageBase =
-          import.meta.env.VITE_STORAGE_URL || "http://localhost:8001/storage";
+
 
         const baseData = {
           first_name: user.first_name || "",
@@ -108,7 +107,7 @@ export default function Profile() {
         };
 
         if (user.photo) {
-          setUserPhotoPreview(`${storageBase}/${user.photo}`);
+          setUserPhotoPreview(user.photo);
         }
 
         if (user.role === "recruiter") {
@@ -121,7 +120,7 @@ export default function Profile() {
             description: user.recruiter?.description || "",
           });
           if (user.recruiter?.logo) {
-            setPreview(`${storageBase}/${user.recruiter.logo}`);
+            setPreview(user.recruiter.logo);
           }
         } else if (user.role === "job_seeker") {
           setFormData({
@@ -133,7 +132,7 @@ export default function Profile() {
             experiences: user.job_seeker?.experiences || [],
           });
           if (user.job_seeker?.cv_path) {
-            setPreview(`${storageBase}/${user.job_seeker.cv_path}`);
+            setPreview(user.job_seeker.cv_path);
           }
         }
       }
@@ -293,13 +292,11 @@ export default function Profile() {
       const res = await profileApi.updateProfile(submissionData);
       if (res.success) {
         setMessage({ type: "success", text: "Profile updated successfully!" });
-        const storageBase =
-          import.meta.env.VITE_STORAGE_URL || "http://localhost:8001/storage";
 
         if (role === "recruiter" && res.data.recruiter?.logo) {
-          setPreview(`${storageBase}/${res.data.recruiter.logo}`);
+          setPreview(res.data.recruiter.logo);
         } else if (role === "job_seeker" && res.data.job_seeker?.cv_path) {
-          setPreview(`${storageBase}/${res.data.job_seeker.cv_path}`);
+          setPreview(res.data.job_seeker.cv_path);
         }
         // Reset file state after successful upload
         setFile(null);

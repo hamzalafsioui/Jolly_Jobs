@@ -17,7 +17,6 @@ import {
 import jobApi from "../api/job.api";
 import MapComponent from "../components/MapComponent";
 
-const storageBase = import.meta.env.VITE_STORAGE_URL || "http://localhost:8001/storage";
 
 export default function JobDetails({ onBack }) {
   const { jobId } = useParams();
@@ -154,7 +153,7 @@ export default function JobDetails({ onBack }) {
             <div className={`w-16 h-16 rounded-xl flex items-center justify-center bg-[#0f172a] text-white shadow-inner overflow-hidden`}>
               {job.recruiter?.logo ? (
                 <img 
-                  src={`${storageBase}/${job.recruiter.logo}`} 
+                  src={job.recruiter.logo}
                   alt={companyName} 
                   className="w-full h-full object-cover"
                 />

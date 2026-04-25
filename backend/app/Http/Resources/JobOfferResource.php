@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class JobOfferResource extends JsonResource
 {
@@ -18,7 +19,7 @@ class JobOfferResource extends JsonResource
                     'company_size' => $this->recruiter?->company_size,
                     'industry'     => $this->recruiter?->industry,
                     'website'      => $this->recruiter?->website,
-                    'logo'         => $this->recruiter?->logo,
+                    'logo'         => $this->recruiter?->logo ? (str_starts_with($this->recruiter->logo, 'http') ? $this->recruiter->logo : asset('storage/' . $this->recruiter->logo)) : null,
                     'description'  => $this->recruiter?->description,
                 ]);
             }),
@@ -37,7 +38,7 @@ class JobOfferResource extends JsonResource
             'status'             => $this->status,
             'views_count'        => $this->views_count,
             'applications_count' => $this->applications_count,
-            'image_path'         => $this->image_path,
+            'image_path'         => $this->image_path ? (str_starts_with($this->image_path, 'http') ? $this->image_path : asset('storage/' . $this->image_path)) : null,
             'address'            => $this->address,
             'latitude'           => (float) $this->latitude,
             'longitude'          => (float) $this->longitude,
