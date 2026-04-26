@@ -23,8 +23,12 @@ class UserResource extends JsonResource
             'photo'      => $this->photo ? (str_starts_with($this->photo, 'http') ? $this->photo : asset('storage/' . $this->photo)) : null,
             'is_active'  => $this->is_active,
             'notification_settings' => $this->notification_settings,
-            'recruiter'  => $this->when($this->role === 'recruiter', $this->recruiter),
-            'job_seeker' => $this->when($this->role === 'job_seeker', $this->jobSeeker?->load(['skills', 'experiences'])),
+            'recruiter'  => $this->when($this->role === 'recruiter' && $this->recruiter, function() {
+                return new RecruiterResource($this->recruiter);
+            }),
+            'job_seeker' => $this->when($this->role === 'job_seeker' && $this->jobSeeker, function() {
+                return new JobSeekerResource($this->jobSeeker->load(['skills', 'experiences']));
+            }),
             'created_at' => $this->created_at?->toISOString(),
         ];
     }

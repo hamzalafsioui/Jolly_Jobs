@@ -13,15 +13,10 @@ class JobOfferResource extends JsonResource
         return [
             'id'                 => $this->id,
             'recruiter' => $this->whenLoaded('recruiter', function () use ($request) {
-                $data = $this->recruiter?->user ? (new UserResource($this->recruiter->user))->toArray($request) : [];
-                return array_merge($data, [
-                    'company_name' => $this->recruiter?->company_name,
-                    'company_size' => $this->recruiter?->company_size,
-                    'industry'     => $this->recruiter?->industry,
-                    'website'      => $this->recruiter?->website,
-                    'logo'         => $this->recruiter?->logo ? (str_starts_with($this->recruiter->logo, 'http') ? $this->recruiter->logo : asset('storage/' . $this->recruiter->logo)) : null,
-                    'description'  => $this->recruiter?->description,
-                ]);
+                if (!$this->recruiter) return [];
+                $userRes = $this->recruiter->user ? (new UserResource($this->recruiter->user))->toArray($request) : [];
+                $recruiterRes = (new RecruiterResource($this->recruiter))->toArray($request);
+                return array_merge($userRes, $recruiterRes);
             }),
             'category_id'        => $this->category_id,
             'category'           => $this->whenLoaded('category'),
