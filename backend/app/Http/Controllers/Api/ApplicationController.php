@@ -114,4 +114,24 @@ class ApplicationController extends Controller
             'mime'   => 'application/pdf'
         ], 'CV retrieved successfully.');
     }
+
+    public function destroy($id): JsonResponse
+    {
+        $application = $this->applicationService->getApplication($id);
+        if (!$application) {
+            return ApiResponse::notFound('Application not found.');
+        }
+
+        if (request()->user()->cannot('delete', $application)) {
+            return ApiResponse::forbidden('You are not authorized to delete this application.');
+        }
+
+        $deleted = $this->applicationService->withdrawApplication($id);
+        if (!$deleted) {
+            return ApiResponse::serverError('Delete failed.');
+        }
+
+        return ApiResponse::deleted('Application withdrawn successfully.');
+    }
 }
+

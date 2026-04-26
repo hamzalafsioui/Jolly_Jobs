@@ -501,20 +501,7 @@ export default function PostJob() {
             />
           </div>
 
-          {/* Requirements */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">
-              Requirements
-            </label>
-            <textarea
-              name="requirements"
-              value={form.requirements}
-              onChange={handleChange}
-              rows={4}
-              placeholder="List the required skills, experience level, education…"
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-            />
-          </div>
+         
 
           {/* Actions */}
           <div className="flex gap-3 pt-2">

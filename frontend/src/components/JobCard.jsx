@@ -13,9 +13,7 @@ export default function JobCard({ job, onClick }) {
 
   const getImageUrl = (path) => {
     if (!path) return null;
-    if (path.startsWith('http')) return path;
-    const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:8001';
-    return `${baseUrl}/storage/${path}`;
+    return path;
   };
 
   // logo Source (job.logo from company or from recruiter Photo)

@@ -15,7 +15,7 @@ class ApplicationResource extends JsonResource
             'job_offer_id'   => $this->job_offer_id,
             'status'         => $this->status,
             'cover_letter'   => $this->cover_letter,
-            'cv_path'        => $this->cv_path,
+            'cv_path'        => $this->cv_path ? (str_starts_with($this->cv_path, 'http') ? $this->cv_path : asset('storage/' . $this->cv_path)) : null,
             'viewed_at'      => $this->viewed_at,
             'created_at'     => $this->created_at?->toISOString(),
             'updated_at'     => $this->updated_at?->toISOString(),

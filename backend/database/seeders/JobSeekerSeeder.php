@@ -17,26 +17,44 @@ class JobSeekerSeeder extends Seeder
     public function run(): void
     {
         //
-        // create users with job_seeker role
-        $users = User::factory()->count(10)->create([
+        $users = User::factory()->count(15)->create([
             'password'=> Hash::make('password123'),
             'role' => 'job_seeker'
         ]);
 
         $skills = Skill::all();
+    
+
+        $photos = ['photos/person1.png', 'photos/person2.jpg', 'photos/person3.jpg'];
+        $i = 0;
 
         foreach ($users as $user) {
+            $user->update([
+                'photo' => $photos[$i % 3],
+                'bio' => fake()->paragraphs(2, true),
+            ]);
+
             $jobSeeker = JobSeeker::create([
                 'user_id' => $user->id,
-                'specialty' => fake()->randomElement(['Frontend', 'Backend', 'Full Stack']),
-                'experience_level' => fake()->randomElement(['Junior', 'Mid', 'Senior']),
+                'specialty' => fake()->randomElement([
+                    'Frontend Developer (React/Vue)', 
+                    'Backend Engineer (Laravel/Node)', 
+                    'Full Stack Developer',
+                    'Mobile Developer (Flutter/React Native)',
+                    'UI/UX Product Designer',
+                    'DevOps & Infrastructure',
+                    'Data Analyst',
+                    'Marketing Specialist'
+                ]),
+                'experience_level' => fake()->randomElement(['Junior (0-2 years)', 'Mid-Level (3-5 years)', 'Senior (5+ years)', 'Lead / Principal']),
                 'cv_path' => null,
             ]);
 
-            // Attach 4-8 random skills to each job seeker
+            // Attach 6-10 random skills to each job seeker
             $jobSeeker->skills()->attach(
-                $skills->random(rand(4, 8))->pluck('id')->toArray()
+                $skills->random(rand(6, 10))->pluck('id')->toArray()
             );
+            $i++;
         }
     }
 }

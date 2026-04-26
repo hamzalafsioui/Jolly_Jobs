@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class JobOfferResource extends JsonResource
 {
@@ -12,15 +13,10 @@ class JobOfferResource extends JsonResource
         return [
             'id'                 => $this->id,
             'recruiter' => $this->whenLoaded('recruiter', function () use ($request) {
-                $data = $this->recruiter?->user ? (new UserResource($this->recruiter->user))->toArray($request) : [];
-                return array_merge($data, [
-                    'company_name' => $this->recruiter?->company_name,
-                    'company_size' => $this->recruiter?->company_size,
-                    'industry'     => $this->recruiter?->industry,
-                    'website'      => $this->recruiter?->website,
-                    'logo'         => $this->recruiter?->logo,
-                    'description'  => $this->recruiter?->description,
-                ]);
+                if (!$this->recruiter) return [];
+                $userRes = $this->recruiter->user ? (new UserResource($this->recruiter->user))->toArray($request) : [];
+                $recruiterRes = (new RecruiterResource($this->recruiter))->toArray($request);
+                return array_merge($userRes, $recruiterRes);
             }),
             'category_id'        => $this->category_id,
             'category'           => $this->whenLoaded('category'),
@@ -37,7 +33,7 @@ class JobOfferResource extends JsonResource
             'status'             => $this->status,
             'views_count'        => $this->views_count,
             'applications_count' => $this->applications_count,
-            'image_path'         => $this->image_path,
+            'image_path'         => $this->image_path ? (str_starts_with($this->image_path, 'http') ? $this->image_path : asset('storage/' . $this->image_path)) : null,
             'address'            => $this->address,
             'latitude'           => (float) $this->latitude,
             'longitude'          => (float) $this->longitude,
@@ -46,6 +42,9 @@ class JobOfferResource extends JsonResource
             }),
             'is_applied'         => $this->when($request->user() && $request->user()->jobSeeker, function() use ($request) {
                 return $request->user()->jobSeeker->applications()->where('job_offer_id', $this->id)->exists();
+            }),
+            'user_application_id'=> $this->when($request->user() && $request->user()->jobSeeker, function() use ($request) {
+                return $request->user()->jobSeeker->applications()->where('job_offer_id', $this->id)->value('id');
             }),
             'created_at'         => $this->created_at?->toISOString(),
             'updated_at'         => $this->updated_at?->toISOString(),

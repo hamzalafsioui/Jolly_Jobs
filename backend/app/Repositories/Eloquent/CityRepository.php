@@ -26,4 +26,23 @@ class CityRepository implements CityRepositoryInterface
         
         return City::where('name', 'ILIKE', '%' . $query . '%')->get(['id', 'name']);
     }
+
+    public function create(array $data): City
+    {
+        return City::create($data);
+    }
+
+    public function update(int $id, array $data): bool
+    {
+        $city = City::find($id);
+        if (!$city) return false;
+        return $city->update($data);
+    }
+
+    public function delete(int $id): bool
+    {
+        $city = City::find($id);
+        if (!$city) return false;
+        return $city->delete();
+    }
 }

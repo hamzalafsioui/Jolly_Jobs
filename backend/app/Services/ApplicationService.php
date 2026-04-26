@@ -133,4 +133,26 @@ class ApplicationService
     {
         return $this->applicationRepository->findByJobOffer($jobOfferId);
     }
+
+    public function withdrawApplication(int $id): bool
+    {
+        $application = $this->applicationRepository->findById($id);
+        if (!$application) {
+            return false;
+        }
+
+        $jobOfferId = $application->job_offer_id;
+        $deleted = $this->applicationRepository->delete($id);
+
+        if ($deleted) {
+            $jobOffer = $this->jobOfferRepository->findById($jobOfferId);
+            if ($jobOffer && $jobOffer->applications_count > 0) {
+                $this->jobOfferRepository->update($jobOffer->id, [
+                    'applications_count' => $jobOffer->applications_count - 1
+                ]);
+            }
+        }
+
+        return $deleted;
+    }
 }

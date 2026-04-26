@@ -146,6 +146,19 @@ const jobApi = {
       throw error;
     }
   },
+
+  /**
+   * Withdraw an application
+   */
+  withdrawApplication: async (applicationId) => {
+    try {
+      const response = await client.delete(`/applications/${applicationId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error withdrawing application:", error);
+      throw error;
+    }
+  },
 };
 
 export default jobApi;
