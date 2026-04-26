@@ -12,7 +12,10 @@ class JobOfferRepository implements JobOfferRepositoryInterface
 {
     public function all(int $perPage = 15): LengthAwarePaginator
     {
-        return JobOffer::with(['recruiter.user', 'category', 'city', 'skills'])->latest()->paginate($perPage);
+        return JobOffer::with(['recruiter.user', 'category', 'city', 'skills'])
+            ->where('status', 'active')
+            ->latest()
+            ->paginate($perPage);
     }
 
     public function findById(int $id): ?JobOffer
@@ -72,7 +75,9 @@ class JobOfferRepository implements JobOfferRepositoryInterface
 
     public function search(array $filters, int $perPage = 15): LengthAwarePaginator
     {
-        $query = JobOffer::query()->with(['recruiter.user', 'category', 'city', 'skills']);
+        $query = JobOffer::query()
+            ->with(['recruiter.user', 'category', 'city', 'skills'])
+            ->where('status', 'active');
 
         if (!empty($filters['category_id'])) {
             $query->where('category_id', $filters['category_id']);
@@ -106,7 +111,8 @@ class JobOfferRepository implements JobOfferRepositoryInterface
             return collect();
         }
 
-        return JobOffer::where('title', 'ILIKE', '%' . $query . '%')
+        return JobOffer::where('status', 'active')
+            ->where('title', 'ILIKE', '%' . $query . '%')
             ->distinct()
             ->orderBy('title')
             ->pluck('title');
