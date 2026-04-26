@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Users, Search, FileText, X } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import recruiterApi from "../../api/recruiter.api";
+import swal from "../../utils/swal";
 import client from "../../api/client";
 
 const STATUSES = [
@@ -69,7 +70,7 @@ export default function Candidates() {
         prev.map((a) => (a.id === appId ? { ...a, status: newStatus } : a)),
       );
     } catch {
-      alert("Failed to update status.");
+      swal.error("Update Failed", "Failed to update application status.");
     } finally {
       setUpdating(null);
     }
@@ -110,7 +111,7 @@ export default function Candidates() {
       }
     } catch (error) {
       setCvModal({ open: false, url: null, loading: false });
-      alert("Could not load CV. Please try again.");
+      swal.error("CV Load Error", "Could not load CV. Please try again.");
     }
   };
 

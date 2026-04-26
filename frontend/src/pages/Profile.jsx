@@ -23,12 +23,12 @@ import {
 } from "lucide-react";
 import profileApi from "../api/profile.api";
 import jobApi from "../api/job.api";
+import swal from "../utils/swal";
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [role, setRole] = useState(null);
-  const [message, setMessage] = useState({ type: "", text: "" });
 
   // Unified state for both roles
   const [formData, setFormData] = useState({
@@ -138,7 +138,7 @@ export default function Profile() {
       }
     } catch (err) {
       console.error("Failed to fetch profile", err);
-      setMessage({ type: "error", text: "Failed to load profile data." });
+      swal.error("Load Error", "Failed to load profile data.");
     } finally {
       setLoading(false);
     }
@@ -209,14 +209,10 @@ export default function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    setMessage({ type: "", text: "" });
 
     // Client side file size check (2MB limit to match PHP config)
     if (file && file.size > 2 * 1024 * 1024) {
-      setMessage({
-        type: "error",
-        text: "File is too large. Maximum size is 2MB.",
-      });
+      swal.error("File Too Large", "Maximum size is 2MB.");
       setSaving(false);
       return;
     }
@@ -291,7 +287,7 @@ export default function Profile() {
     try {
       const res = await profileApi.updateProfile(submissionData);
       if (res.success) {
-        setMessage({ type: "success", text: "Profile updated successfully!" });
+        swal.toast("success", "Profile updated successfully!");
 
         if (role === "recruiter" && res.data.recruiter?.logo) {
           setPreview(res.data.recruiter.logo);
@@ -303,10 +299,7 @@ export default function Profile() {
       }
     } catch (err) {
       console.error("Update failed", err);
-      setMessage({
-        type: "error",
-        text: err.response?.data?.message || "Failed to update profile.",
-      });
+      swal.error("Update Failed", err.response?.data?.message || "Failed to update profile.");
     } finally {
       setSaving(false);
     }
@@ -338,28 +331,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {message.text && (
-        <div
-          className={`p-4 rounded-3xl flex items-center gap-3 border ${
-            message.type === "success"
-              ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-              : "bg-red-50 text-red-700 border-red-100"
-          }`}
-        >
-          {message.type === "success" ? (
-            <CheckCircle2 size={20} />
-          ) : (
-            <AlertCircle size={20} />
-          )}
-          <p className="text-sm font-bold">{message.text}</p>
-          <button
-            onClick={() => setMessage({ type: "", text: "" })}
-            className="ml-auto opacity-50 hover:opacity-100"
-          >
-            <X size={16} />
-          </button>
-        </div>
-      )}
+
 
       <form onSubmit={handleSubmit} className="space-y-8 pb-10">
         {/* Section 1: Personal Details */}

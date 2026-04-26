@@ -11,6 +11,7 @@ import {
   Tag,
 } from "lucide-react";
 import adminApi from "../../api/admin.api";
+import swal from "../../utils/swal";
 
 export default function SkillsManagement() {
   const [skills, setSkills] = useState([]);
@@ -91,12 +92,13 @@ export default function SkillsManagement() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this skill?")) {
+    const result = await swal.confirm("Delete Skill", "Are you sure you want to delete this skill?");
+    if (result.isConfirmed) {
       try {
         await adminApi.deleteSkill(id);
         setSkills(skills.filter((s) => s.id !== id));
       } catch (err) {
-        alert("Failed to delete skill.");
+        swal.error("Error", "Failed to delete skill.");
       }
     }
   };

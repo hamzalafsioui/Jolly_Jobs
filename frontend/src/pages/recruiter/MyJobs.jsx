@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Briefcase, Plus, Trash2, Eye, Users, Calendar, Edit2 } from "lucide-react";
 import recruiterApi from "../../api/recruiter.api";
+import swal from "../../utils/swal";
 
 const STATUS_COLORS = {
   active: "bg-green-100 text-green-700",
@@ -39,7 +40,7 @@ export default function MyJobs() {
       }
     } catch (error) {
       console.error("Failed to update job status:", error);
-      alert("Failed to update status.");
+      swal.error("Update Failed", "Failed to update job status.");
     } finally {
       setTogglingIds(prev => {
         const next = new Set(prev);
@@ -50,13 +51,14 @@ export default function MyJobs() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this job offer?")) return;
+    const result = await swal.confirm("Delete Job", "Are you sure you want to delete this job offer?");
+    if (!result.isConfirmed) return;
     setDeletingId(id);
     try {
       await recruiterApi.deleteJob(id);
       setJobs(prev => prev.filter(j => j.id !== id));
     } catch {
-      alert("Failed to delete job.");
+      swal.error("Delete Failed", "Failed to delete job.");
     } finally {
       setDeletingId(null);
     }

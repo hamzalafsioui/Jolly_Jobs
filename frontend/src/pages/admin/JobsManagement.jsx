@@ -14,6 +14,7 @@ import {
   Building2
 } from "lucide-react";
 import adminApi from "../../api/admin.api";
+import swal from "../../utils/swal";
 
 export default function JobsManagement() {
   const [jobs, setJobs] = useState([]);
@@ -38,12 +39,13 @@ export default function JobsManagement() {
   };
 
   const handleDeleteJob = async (id) => {
-    if (window.confirm("Are you sure you want to delete this job posting? This cannot be undone.")) {
+    const result = await swal.confirm("Delete Job", "Are you sure you want to delete this job posting? This cannot be undone.");
+    if (result.isConfirmed) {
       try {
         await adminApi.deleteJob(id);
         setJobs(jobs.filter(job => job.id !== id));
       } catch (err) {
-        alert("Failed to delete job.");
+        swal.error("Error", "Failed to delete job.");
       }
     }
   };

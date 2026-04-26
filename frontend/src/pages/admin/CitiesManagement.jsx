@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Search, Edit2, Trash2, MapPin, Loader2, X } from "lucide-react";
 import adminApi from "../../api/admin.api";
+import swal from "../../utils/swal";
 
 export default function CitiesManagement() {
   const [cities, setCities] = useState([]);
@@ -87,8 +88,9 @@ export default function CitiesManagement() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this city?")) return;
-
+    const result = await swal.confirm("Delete City", "Are you sure you want to delete this city?");
+    if (!result.isConfirmed) return;
+    
     try {
       const res = await adminApi.deleteCity(id);
       if (res.success) {
@@ -96,7 +98,7 @@ export default function CitiesManagement() {
       }
     } catch (err) {
       console.error("Failed to delete city:", err);
-      alert("Failed to delete city. It might be linked to existing job offers or users.");
+      swal.error("Error", "Failed to delete city. It might be linked to existing job offers or users.");
     }
   };
 

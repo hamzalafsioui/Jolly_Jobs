@@ -11,6 +11,7 @@ import {
   UserCheck
 } from "lucide-react";
 import adminApi from "../../api/admin.api";
+import swal from "../../utils/swal";
 
 export default function UsersManagement() {
   const [users, setUsers] = useState([]);
@@ -35,12 +36,13 @@ export default function UsersManagement() {
   };
 
   const handleDeleteUser = async (id) => {
-    if (window.confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
+    const result = await swal.confirm("Delete User", "Are you sure you want to delete this user? This action cannot be undone.");
+    if (result.isConfirmed) {
       try {
         await adminApi.deleteUser(id);
         setUsers(users.filter(user => user.id !== id));
       } catch (err) {
-        alert("Failed to delete user.");
+        swal.error("Error", "Failed to delete user.");
       }
     }
   };
@@ -48,12 +50,13 @@ export default function UsersManagement() {
   const handleToggleStatus = async (user) => {
     const newStatus = !user.is_active;
     const action = newStatus ? "activate" : "ban";
-    if (window.confirm(`Are you sure you want to ${action} this user?`)) {
+    const result = await swal.confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} User`, `Are you sure you want to ${action} this user?`);
+    if (result.isConfirmed) {
       try {
         await adminApi.updateUser(user.id, { is_active: newStatus });
         setUsers(users.map(u => u.id === user.id ? { ...u, is_active: newStatus } : u));
       } catch (err) {
-        alert(`Failed to ${action} user.`);
+        swal.error("Error", `Failed to ${action} user.`);
       }
     }
   };

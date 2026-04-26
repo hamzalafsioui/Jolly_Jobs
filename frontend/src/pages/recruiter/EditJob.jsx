@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import recruiterApi from "../../api/recruiter.api";
 import jobApi from "../../api/job.api";
+import swal from "../../utils/swal";
 
 export default function EditJob() {
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ export default function EditJob() {
 
   const handleVerifyAddress = async () => {
     if (!form.address.trim()) {
-      alert("Please enter an address first");
+      swal.info("Missing Address", "Please enter an address first");
       return;
     }
 
@@ -97,7 +98,7 @@ export default function EditJob() {
     // Safety timeout
     const timeoutId = setTimeout(() => {
       setVerifying(false);
-      alert("Verification timed out. Using free OpenStreetMap service...");
+      swal.error("Verification Timeout", "Verification timed out. Using free OpenStreetMap service...");
     }, 8000);
 
     try {
@@ -117,16 +118,17 @@ export default function EditJob() {
           latitude: parseFloat(result.lat),
           longitude: parseFloat(result.lon),
         }));
-        alert("Location verified via OpenStreetMap!");
+        swal.toast("success", "Location verified via OpenStreetMap!");
       } else {
-        alert(
+        swal.error(
+          "Address Not Found",
           "Could not find this address. Please try adding the city name (e.g. 'Street Name, City').",
         );
       }
     } catch (err) {
       clearTimeout(timeoutId);
       setVerifying(false);
-      alert("Address verification service error. Please try again.");
+      swal.error("Service Error", "Address verification service error. Please try again.");
       console.error(err);
     }
   };
