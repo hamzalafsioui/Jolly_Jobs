@@ -58,6 +58,13 @@ class UpdateProfileRequest extends FormRequest
             'experiences.*.start_date' => ['required_with:experiences', 'date'],
             'experiences.*.end_date' => ['nullable', 'date', 'after_or_equal:experiences.*.start_date'],
             'experiences.*.description' => ['nullable', 'string'],
+            'educations' => ['sometimes', 'nullable', 'array'],
+            'educations.*.school' => ['required_with:educations', 'string', 'max:255'],
+            'educations.*.degree' => ['required_with:educations', 'string', 'max:255'],
+            'educations.*.field_of_study' => ['nullable', 'string', 'max:255'],
+            'educations.*.start_date' => ['required_with:educations', 'date'],
+            'educations.*.end_date' => ['nullable', 'date', 'after_or_equal:educations.*.start_date'],
+            'educations.*.description' => ['nullable', 'string'],
         ];
     }
 }

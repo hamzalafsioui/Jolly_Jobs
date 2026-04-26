@@ -29,7 +29,7 @@ class ProfileService
         if ($user->role === 'recruiter') {
             $userData->load('recruiter');
         } elseif ($user->role === 'job_seeker') {
-            $userData->load('jobSeeker.skills');
+            $userData->load(['jobSeeker.skills', 'jobSeeker.experiences', 'jobSeeker.educations']);
         }
 
         return $userData;
@@ -133,6 +133,13 @@ class ProfileService
             $jobSeeker->experiences()->delete();
             foreach ($data['experiences'] as $expData) {
                 $jobSeeker->experiences()->create($expData);
+            }
+        }
+
+        if (isset($data['educations'])) {
+            $jobSeeker->educations()->delete();
+            foreach ($data['educations'] as $eduData) {
+                $jobSeeker->educations()->create($eduData);
             }
         }
     }

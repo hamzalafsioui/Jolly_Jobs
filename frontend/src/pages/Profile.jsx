@@ -50,6 +50,7 @@ export default function Profile() {
     skills: [],
     notification_settings: { new_application: true, status_update: true, weekly_summary: false },
     experiences: [],
+    educations: [],
   });
 
   const [cities, setCities] = useState([]);
@@ -130,6 +131,7 @@ export default function Profile() {
             skills: user.job_seeker?.skills?.map((s) => s.id) || [],
             notification_settings: user.notification_settings || { new_application: true, status_update: true, weekly_summary: false },
             experiences: user.job_seeker?.experiences || [],
+            educations: user.job_seeker?.educations || [],
           });
           if (user.job_seeker?.cv_path) {
             setPreview(user.job_seeker.cv_path);
@@ -206,6 +208,38 @@ export default function Profile() {
     });
   };
 
+  const handleAddEducation = () => {
+    setFormData((prev) => ({
+      ...prev,
+      educations: [
+        ...prev.educations,
+        {
+          school: "",
+          degree: "",
+          field_of_study: "",
+          start_date: "",
+          end_date: "",
+          description: "",
+        },
+      ],
+    }));
+  };
+
+  const handleRemoveEducation = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      educations: prev.educations.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleEducationChange = (index, field, value) => {
+    setFormData((prev) => {
+      const newEdu = [...prev.educations];
+      newEdu[index] = { ...newEdu[index], [field]: value };
+      return { ...prev, educations: newEdu };
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -274,6 +308,17 @@ export default function Profile() {
           Object.keys(exp).forEach((key) => {
             if (exp[key] !== null && exp[key] !== undefined && exp[key] !== "") {
               submissionData.append(`experiences[${index}][${key}]`, exp[key]);
+            }
+          });
+        });
+      }
+
+      // Handle educations array
+      if (Array.isArray(formData.educations)) {
+        formData.educations.forEach((edu, index) => {
+          Object.keys(edu).forEach((key) => {
+            if (edu[key] !== null && edu[key] !== undefined && edu[key] !== "") {
+              submissionData.append(`educations[${index}][${key}]`, edu[key]);
             }
           });
         });
@@ -869,6 +914,145 @@ export default function Profile() {
                         rows={3}
                         placeholder="Describe your responsibilities and achievements..."
                         className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm resize-none"
+                      />
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Section: Education */}
+        {!isRecruiter && (
+          <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+                  <GraduationCap size={20} />
+                </div>
+                <h2 className="text-xl font-black text-slate-800">
+                  Education
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={handleAddEducation}
+                className="flex items-center gap-2 text-amber-600 hover:text-amber-700 font-bold text-sm bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-xl transition-all"
+              >
+                <Plus size={16} />
+                Add Education
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {formData.educations.length === 0 ? (
+                <div className="text-center py-10 border-2 border-dashed border-slate-100 rounded-3xl">
+                  <p className="text-slate-400 text-sm">No education entries added yet.</p>
+                </div>
+              ) : (
+                formData.educations.map((edu, index) => (
+                  <div
+                    key={index}
+                    className="relative p-6 rounded-3xl border border-slate-100 bg-slate-50/30 space-y-4 group transition-all hover:border-amber-100 hover:bg-white"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveEducation(index)}
+                      className="absolute top-4 right-4 p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          School / University
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.school}
+                          onChange={(e) =>
+                            handleEducationChange(index, "school", e.target.value)
+                          }
+                          placeholder="e.g. Harvard University"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Degree
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.degree}
+                          onChange={(e) =>
+                            handleEducationChange(index, "degree", e.target.value)
+                          }
+                          placeholder="e.g. Bachelor's Degree"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Field of Study
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.field_of_study || ""}
+                          onChange={(e) =>
+                            handleEducationChange(index, "field_of_study", e.target.value)
+                          }
+                          placeholder="e.g. Computer Science"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Start Date
+                        </label>
+                        <input
+                          type="date"
+                          value={edu.start_date ? edu.start_date.substring(0, 10) : ""}
+                          onChange={(e) =>
+                            handleEducationChange(index, "start_date", e.target.value)
+                          }
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          End Date (Optional)
+                        </label>
+                        <input
+                          type="date"
+                          value={edu.end_date ? edu.end_date.substring(0, 10) : ""}
+                          onChange={(e) =>
+                            handleEducationChange(index, "end_date", e.target.value)
+                          }
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                        Description
+                      </label>
+                      <textarea
+                        value={edu.description || ""}
+                        onChange={(e) =>
+                          handleEducationChange(index, "description", e.target.value)
+                        }
+                        rows={3}
+                        placeholder="Additional details about your education..."
+                        className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm resize-none"
                       />
                     </div>
                   </div>

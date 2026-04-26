@@ -17,6 +17,7 @@ class JobSeekerResource extends JsonResource
             'cv_path'          => $this->cv_path ? (str_starts_with($this->cv_path, 'http') ? $this->cv_path : asset('storage/' . $this->cv_path)) : null,
             'skills'           => $this->whenLoaded('skills'),
             'experiences'      => $this->whenLoaded('experiences'),
+            'educations'       => $this->whenLoaded('educations'),
             'created_at'       => $this->created_at?->toISOString(),
             'updated_at'       => $this->updated_at?->toISOString(),
         ];

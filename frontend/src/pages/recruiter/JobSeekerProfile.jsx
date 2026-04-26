@@ -228,6 +228,53 @@ export default function JobSeekerProfile() {
               )}
             </div>
           </div>
+
+          {/* Education Timeline */}
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-10 space-y-8">
+            <h2 className="text-xl font-black text-slate-800 flex items-center gap-3">
+              <Calendar className="text-amber-500" size={24} />
+              Education
+            </h2>
+
+            <div className="relative space-y-8 ml-4">
+              {/* Timeline Line */}
+              {seeker.educations?.length > 0 && (
+                <div className="absolute left-[-1.25rem] top-2 bottom-0 w-0.5 bg-slate-100" />
+              )}
+
+              {seeker.educations?.length > 0 ? (
+                seeker.educations.map((edu, index) => (
+                  <div key={index} className="relative">
+                    {/* Timeline Dot */}
+                    <div className="absolute left-[-1.5rem] top-1.5 w-2.5 h-2.5 rounded-full bg-amber-500 border-2 border-white shadow-sm" />
+                    
+                    <div className="space-y-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <h3 className="font-bold text-slate-800 text-lg">{edu.degree} in {edu.field_of_study}</h3>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-amber-500 bg-amber-50 px-3 py-1 rounded-full w-fit">
+                          {new Date(edu.start_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })} 
+                          {' - '} 
+                          {edu.end_date ? new Date(edu.end_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' }) : 'Present'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-500 text-sm font-semibold">
+                        <p>{edu.school}</p>
+                      </div>
+                      {edu.description && (
+                         <div className="mt-4 p-5 rounded-2xl bg-slate-50/50 border border-slate-100/50 text-slate-600 text-sm leading-relaxed font-medium">
+                           {edu.description}
+                         </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-10 border-2 border-dashed border-slate-100 rounded-[2rem]">
+                  <p className="text-slate-400 font-medium">No education listed.</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
