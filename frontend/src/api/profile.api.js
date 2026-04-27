@@ -18,6 +18,14 @@ const profileApi = {
     const response = await API.post("/auth/profile", formData);
     return response.data;
   },
+
+  /**
+   * Scan the user CV for skills
+   */
+  scanCv: async () => {
+    const response = await API.post("/auth/profile/scan-cv");
+    return response.data;
+  },
 };
 
 export default profileApi;
