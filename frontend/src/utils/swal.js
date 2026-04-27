@@ -56,6 +56,12 @@ const swalUtils = {
       title,
     });
   },
+  fire: (options) => {
+    return Swal.fire({
+      confirmButtonColor: JOLLY_PURPLE,
+      ...options,
+    });
+  },
 };
 
 export default swalUtils;
