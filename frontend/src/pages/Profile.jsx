@@ -24,10 +24,12 @@ import {
 import profileApi from "../api/profile.api";
 import jobApi from "../api/job.api";
 import swal from "../utils/swal";
+import Swal from "sweetalert2";
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [scanning, setScanning] = useState(false);
   const [role, setRole] = useState(null);
 
   // Unified state for both roles
@@ -238,6 +240,90 @@ export default function Profile() {
       newEdu[index] = { ...newEdu[index], [field]: value };
       return { ...prev, educations: newEdu };
     });
+  };
+
+  const handleScanCV = async () => {
+    if (!formData.cv && !file) {
+      swal.fire({
+        title: "No CV Found",
+        text: "Please upload your CV first before scanning.",
+        icon: "warning",
+        confirmButtonColor: "#6366f1",
+      });
+      return;
+    }
+
+    setScanning(true);
+    try {
+      const response = await profileApi.scanCv();
+      if (response.success) {
+        const suggestions = response.data;
+
+        if (suggestions.length === 0) {
+          swal.fire({
+            title: "Scan Complete",
+            text: "We didn't find any new skills in your CV that aren't already in your profile.",
+            icon: "info",
+            confirmButtonColor: "#6366f1",
+          });
+          return;
+        }
+
+        const result = await swal.fire({
+          title: "Skills Found!",
+          html: `
+            <div class="text-left space-y-4">
+              <p class="text-sm text-slate-600 mb-4 font-medium">We found these skills in your CV. Uncheck the ones you don't want to add:</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-2">
+                ${suggestions
+                  .map(
+                    (s) => `
+                    <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer transition-all">
+                      <input type="checkbox" name="skill_suggestion" value="${s.id}" checked class="w-4 h-4 text-jolly-purple rounded focus:ring-jolly-purple border-slate-300" />
+                      <span class="text-sm font-bold text-slate-700">${s.name}</span>
+                    </label>
+                  `
+                  )
+                  .join("")}
+              </div>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: "Add Selected Skills",
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#6366f1",
+          cancelButtonColor: "#94a3b8",
+          reverseButtons: true,
+          icon: "success",
+          preConfirm: () => {
+            const selectedIds = Array.from(document.querySelectorAll('input[name="skill_suggestion"]:checked')).map(el => parseInt(el.value));
+            if (selectedIds.length === 0) {
+              Swal.showValidationMessage('Please select at least one skill to add.');
+            }
+            return selectedIds;
+          }
+        });
+
+        if (result.isConfirmed) {
+          const selectedSkillIds = result.value;
+          setFormData((prev) => ({
+            ...prev,
+            skills: [...new Set([...prev.skills, ...selectedSkillIds])],
+          }));
+          swal.toast("success", "Selected skills added successfully!");
+        }
+      }
+    } catch (err) {
+      console.error("Scan error:", err);
+      swal.fire({
+        title: "Scan Failed",
+        text: err?.response?.data?.message || "Failed to scan your CV. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#ef4444",
+      });
+    } finally {
+      setScanning(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -779,6 +865,23 @@ export default function Profile() {
                     />
                   </label>
                 </div>
+                {(file || formData.cv_path) && (
+                  <div className="flex justify-end mt-2">
+                    <button
+                      type="button"
+                      onClick={handleScanCV}
+                      disabled={scanning}
+                      className="flex items-center gap-2 px-4 py-2 bg-jolly-purple/10 text-jolly-purple hover:bg-jolly-purple hover:text-white rounded-xl text-xs font-black transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group shadow-sm"
+                    >
+                      {scanning ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <span>(-_-)</span>
+                      )}
+                      {scanning ? "Analyzing CV..." : "Scan CV for Skills"}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </section>
