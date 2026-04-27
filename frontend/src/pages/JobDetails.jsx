@@ -15,6 +15,7 @@ import {
   Globe 
 } from "lucide-react";
 import jobApi from "../api/job.api";
+import swal from "../utils/swal";
 import MapComponent from "../components/MapComponent";
 
 
@@ -49,7 +50,7 @@ export default function JobDetails({ onBack }) {
   const handleToggleSave = () => {
     const token = localStorage.getItem("token");
     if (!token) {
-        alert("Please log in to save jobs");
+        swal.info("Login Required", "Please log in to save jobs");
         return;
     }
     jobApi.toggleSave(jobId).then(res => {
@@ -65,7 +66,7 @@ export default function JobDetails({ onBack }) {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) {
-        alert("Please log in to apply for jobs");
+        swal.info("Login Required", "Please log in to apply for jobs");
         return;
     }
 
@@ -95,9 +96,8 @@ export default function JobDetails({ onBack }) {
   const handleWithdraw = async () => {
     if (!applicationId) return;
     
-    if (!window.confirm("Are You Sure Do You Want to Do This Action ?")) {
-      return;
-    }
+    const result = await swal.confirm("Withdraw Application", "Are you sure you want to withdraw your application?");
+    if (!result.isConfirmed) return;
 
     try {
       const res = await jobApi.withdrawApplication(applicationId);
@@ -108,7 +108,7 @@ export default function JobDetails({ onBack }) {
       }
     } catch (err) {
       console.error("Failed to withdraw application", err);
-      alert("Failed to withdraw application. Please try again.");
+      swal.error("Withdrawal Failed", "Failed to withdraw application. Please try again.");
     }
   };
 
@@ -183,10 +183,10 @@ export default function JobDetails({ onBack }) {
                <button 
                  onClick={() => {
                    const token = localStorage.getItem("token");
-                   if (!token) {
-                       alert("Please log in to apply for jobs");
-                       return;
-                   }
+                    if (!token) {
+                        swal.info("Login Required", "Please log in to apply for jobs");
+                        return;
+                    }
                    setShowApplyModal(true);
                  }}
                  className="bg-jolly-purple text-white px-8 py-3 rounded-xl font-bold font-heading hover:bg-jolly-deep-purple transition-all shadow-[0_4px_14_rgba(103,58,183,0.39)]"
@@ -297,7 +297,7 @@ export default function JobDetails({ onBack }) {
                    onClick={() => {
                      const token = localStorage.getItem("token");
                      if (!token) {
-                         alert("Please log in to apply for jobs");
+                         swal.info("Login Required", "Please log in to apply for jobs");
                          return;
                      }
                      setShowApplyModal(true);

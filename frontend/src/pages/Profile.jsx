@@ -23,12 +23,14 @@ import {
 } from "lucide-react";
 import profileApi from "../api/profile.api";
 import jobApi from "../api/job.api";
+import swal from "../utils/swal";
+import Swal from "sweetalert2";
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [scanning, setScanning] = useState(false);
   const [role, setRole] = useState(null);
-  const [message, setMessage] = useState({ type: "", text: "" });
 
   // Unified state for both roles
   const [formData, setFormData] = useState({
@@ -50,6 +52,7 @@ export default function Profile() {
     skills: [],
     notification_settings: { new_application: true, status_update: true, weekly_summary: false },
     experiences: [],
+    educations: [],
   });
 
   const [cities, setCities] = useState([]);
@@ -130,6 +133,7 @@ export default function Profile() {
             skills: user.job_seeker?.skills?.map((s) => s.id) || [],
             notification_settings: user.notification_settings || { new_application: true, status_update: true, weekly_summary: false },
             experiences: user.job_seeker?.experiences || [],
+            educations: user.job_seeker?.educations || [],
           });
           if (user.job_seeker?.cv_path) {
             setPreview(user.job_seeker.cv_path);
@@ -138,7 +142,7 @@ export default function Profile() {
       }
     } catch (err) {
       console.error("Failed to fetch profile", err);
-      setMessage({ type: "error", text: "Failed to load profile data." });
+      swal.error("Load Error", "Failed to load profile data.");
     } finally {
       setLoading(false);
     }
@@ -206,17 +210,129 @@ export default function Profile() {
     });
   };
 
+  const handleAddEducation = () => {
+    setFormData((prev) => ({
+      ...prev,
+      educations: [
+        ...prev.educations,
+        {
+          school: "",
+          degree: "",
+          field_of_study: "",
+          start_date: "",
+          end_date: "",
+          description: "",
+        },
+      ],
+    }));
+  };
+
+  const handleRemoveEducation = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      educations: prev.educations.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleEducationChange = (index, field, value) => {
+    setFormData((prev) => {
+      const newEdu = [...prev.educations];
+      newEdu[index] = { ...newEdu[index], [field]: value };
+      return { ...prev, educations: newEdu };
+    });
+  };
+
+  const handleScanCV = async () => {
+    if (!formData.cv && !file) {
+      swal.fire({
+        title: "No CV Found",
+        text: "Please upload your CV first before scanning.",
+        icon: "warning",
+        confirmButtonColor: "#6366f1",
+      });
+      return;
+    }
+
+    setScanning(true);
+    try {
+      const response = await profileApi.scanCv();
+      if (response.success) {
+        const suggestions = response.data;
+
+        if (suggestions.length === 0) {
+          swal.fire({
+            title: "Scan Complete",
+            text: "We didn't find any new skills in your CV that aren't already in your profile.",
+            icon: "info",
+            confirmButtonColor: "#6366f1",
+          });
+          return;
+        }
+
+        const result = await swal.fire({
+          title: "Skills Found!",
+          html: `
+            <div class="text-left space-y-4">
+              <p class="text-sm text-slate-600 mb-4 font-medium">We found these skills in your CV. Uncheck the ones you don't want to add:</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-2">
+                ${suggestions
+                  .map(
+                    (s) => `
+                    <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer transition-all">
+                      <input type="checkbox" name="skill_suggestion" value="${s.id}" checked class="w-4 h-4 text-jolly-purple rounded focus:ring-jolly-purple border-slate-300" />
+                      <span class="text-sm font-bold text-slate-700">${s.name}</span>
+                    </label>
+                  `
+                  )
+                  .join("")}
+              </div>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: "Add Selected Skills",
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#6366f1",
+          cancelButtonColor: "#94a3b8",
+          reverseButtons: true,
+          icon: "success",
+          preConfirm: () => {
+            const selectedIds = Array.from(document.querySelectorAll('input[name="skill_suggestion"]:checked')).map(el => parseInt(el.value));
+            if (selectedIds.length === 0) {
+              Swal.showValidationMessage('Please select at least one skill to add.');
+            }
+            return selectedIds;
+          }
+        });
+
+        if (result.isConfirmed) {
+          const selectedSkillIds = result.value;
+          setFormData((prev) => ({
+            ...prev,
+            skills: [...new Set([...prev.skills, ...selectedSkillIds])],
+          }));
+          swal.toast("success", "Selected skills added successfully!");
+        }
+      }
+    } catch (err) {
+      console.error("Scan error:", err);
+      swal.fire({
+        title: "Scan Failed",
+        text: err?.response?.data?.message || "Failed to scan your CV. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#ef4444",
+      });
+    } finally {
+      setScanning(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    setMessage({ type: "", text: "" });
 
     // Client side file size check (2MB limit to match PHP config)
     if (file && file.size > 2 * 1024 * 1024) {
-      setMessage({
-        type: "error",
-        text: "File is too large. Maximum size is 2MB.",
-      });
+      swal.error("File Too Large", "Maximum size is 2MB.");
       setSaving(false);
       return;
     }
@@ -282,6 +398,17 @@ export default function Profile() {
           });
         });
       }
+
+      // Handle educations array
+      if (Array.isArray(formData.educations)) {
+        formData.educations.forEach((edu, index) => {
+          Object.keys(edu).forEach((key) => {
+            if (edu[key] !== null && edu[key] !== undefined && edu[key] !== "") {
+              submissionData.append(`educations[${index}][${key}]`, edu[key]);
+            }
+          });
+        });
+      }
     }
 
     // Global Fields
@@ -291,7 +418,7 @@ export default function Profile() {
     try {
       const res = await profileApi.updateProfile(submissionData);
       if (res.success) {
-        setMessage({ type: "success", text: "Profile updated successfully!" });
+        swal.toast("success", "Profile updated successfully!");
 
         if (role === "recruiter" && res.data.recruiter?.logo) {
           setPreview(res.data.recruiter.logo);
@@ -303,10 +430,7 @@ export default function Profile() {
       }
     } catch (err) {
       console.error("Update failed", err);
-      setMessage({
-        type: "error",
-        text: err.response?.data?.message || "Failed to update profile.",
-      });
+      swal.error("Update Failed", err.response?.data?.message || "Failed to update profile.");
     } finally {
       setSaving(false);
     }
@@ -338,28 +462,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {message.text && (
-        <div
-          className={`p-4 rounded-3xl flex items-center gap-3 border ${
-            message.type === "success"
-              ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-              : "bg-red-50 text-red-700 border-red-100"
-          }`}
-        >
-          {message.type === "success" ? (
-            <CheckCircle2 size={20} />
-          ) : (
-            <AlertCircle size={20} />
-          )}
-          <p className="text-sm font-bold">{message.text}</p>
-          <button
-            onClick={() => setMessage({ type: "", text: "" })}
-            className="ml-auto opacity-50 hover:opacity-100"
-          >
-            <X size={16} />
-          </button>
-        </div>
-      )}
+
 
       <form onSubmit={handleSubmit} className="space-y-8 pb-10">
         {/* Section 1: Personal Details */}
@@ -762,6 +865,23 @@ export default function Profile() {
                     />
                   </label>
                 </div>
+                {(file || formData.cv_path) && (
+                  <div className="flex justify-end mt-2">
+                    <button
+                      type="button"
+                      onClick={handleScanCV}
+                      disabled={scanning}
+                      className="flex items-center gap-2 px-4 py-2 bg-jolly-purple/10 text-jolly-purple hover:bg-jolly-purple hover:text-white rounded-xl text-xs font-black transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group shadow-sm"
+                    >
+                      {scanning ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <span>(-_-)</span>
+                      )}
+                      {scanning ? "Analyzing CV..." : "Scan CV for Skills"}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </section>
@@ -897,6 +1017,145 @@ export default function Profile() {
                         rows={3}
                         placeholder="Describe your responsibilities and achievements..."
                         className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-jolly-purple focus:ring-0 transition-all text-sm resize-none"
+                      />
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Section: Education */}
+        {!isRecruiter && (
+          <section className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-sm space-y-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+                  <GraduationCap size={20} />
+                </div>
+                <h2 className="text-xl font-black text-slate-800">
+                  Education
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={handleAddEducation}
+                className="flex items-center gap-2 text-amber-600 hover:text-amber-700 font-bold text-sm bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-xl transition-all"
+              >
+                <Plus size={16} />
+                Add Education
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {formData.educations.length === 0 ? (
+                <div className="text-center py-10 border-2 border-dashed border-slate-100 rounded-3xl">
+                  <p className="text-slate-400 text-sm">No education entries added yet.</p>
+                </div>
+              ) : (
+                formData.educations.map((edu, index) => (
+                  <div
+                    key={index}
+                    className="relative p-6 rounded-3xl border border-slate-100 bg-slate-50/30 space-y-4 group transition-all hover:border-amber-100 hover:bg-white"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveEducation(index)}
+                      className="absolute top-4 right-4 p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          School / University
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.school}
+                          onChange={(e) =>
+                            handleEducationChange(index, "school", e.target.value)
+                          }
+                          placeholder="e.g. Harvard University"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Degree
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.degree}
+                          onChange={(e) =>
+                            handleEducationChange(index, "degree", e.target.value)
+                          }
+                          placeholder="e.g. Bachelor's Degree"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Field of Study
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.field_of_study || ""}
+                          onChange={(e) =>
+                            handleEducationChange(index, "field_of_study", e.target.value)
+                          }
+                          placeholder="e.g. Computer Science"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          Start Date
+                        </label>
+                        <input
+                          type="date"
+                          value={edu.start_date ? edu.start_date.substring(0, 10) : ""}
+                          onChange={(e) =>
+                            handleEducationChange(index, "start_date", e.target.value)
+                          }
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                          End Date (Optional)
+                        </label>
+                        <input
+                          type="date"
+                          value={edu.end_date ? edu.end_date.substring(0, 10) : ""}
+                          onChange={(e) =>
+                            handleEducationChange(index, "end_date", e.target.value)
+                          }
+                          className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-1">
+                        Description
+                      </label>
+                      <textarea
+                        value={edu.description || ""}
+                        onChange={(e) =>
+                          handleEducationChange(index, "description", e.target.value)
+                        }
+                        rows={3}
+                        placeholder="Additional details about your education..."
+                        className="w-full px-4 py-3 rounded-xl border border-slate-100 focus:border-amber-500 focus:ring-0 transition-all text-sm resize-none"
                       />
                     </div>
                   </div>
