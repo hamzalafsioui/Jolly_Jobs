@@ -6,18 +6,19 @@ use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\Contracts\RecruiterRepositoryInterface;
 use App\Repositories\Contracts\JobSeekerRepositoryInterface;
+use App\Repositories\Contracts\ApplicationRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Exception;
 use Illuminate\Http\UploadedFile;
-use App\Models\Application;
 
 class ProfileService
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
         private RecruiterRepositoryInterface $recruiterRepository,
-        private JobSeekerRepositoryInterface $jobSeekerRepository
+        private JobSeekerRepositoryInterface $jobSeekerRepository,
+        private ApplicationRepositoryInterface $applicationRepository
     ) {}
 
     /**
@@ -118,7 +119,7 @@ class ProfileService
         if (isset($data['cv']) && $data['cv'] instanceof UploadedFile && $data['cv']->isValid()) {
             // Delete old CV if exists AND not used in any application
             if ($jobSeeker->cv_path) {
-                $isUsedInApplications = Application::where('cv_path', $jobSeeker->cv_path)->exists();
+                $isUsedInApplications = $this->applicationRepository->isCvUsed($jobSeeker->cv_path);
                 if (!$isUsedInApplications) {
                     Storage::disk('public')->delete($jobSeeker->cv_path);
                 }
