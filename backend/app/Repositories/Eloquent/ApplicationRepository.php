@@ -62,4 +62,9 @@ class ApplicationRepository implements ApplicationRepositoryInterface
             ->orderBy('created_at', 'desc')
             ->get();
     }
+
+    public function isCvUsed(string $cvPath): bool
+    {
+        return Application::where('cv_path', $cvPath)->exists();
+    }
 }

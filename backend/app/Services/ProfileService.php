@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Exception;
 use Illuminate\Http\UploadedFile;
+use App\Models\Application;
 
 class ProfileService
 {
@@ -115,9 +116,12 @@ class ProfileService
 
         // Handle CV upload
         if (isset($data['cv']) && $data['cv'] instanceof UploadedFile && $data['cv']->isValid()) {
-            // Delete old CV if exists
+            // Delete old CV if exists AND not used in any application
             if ($jobSeeker->cv_path) {
-                Storage::disk('public')->delete($jobSeeker->cv_path);
+                $isUsedInApplications = Application::where('cv_path', $jobSeeker->cv_path)->exists();
+                if (!$isUsedInApplications) {
+                    Storage::disk('public')->delete($jobSeeker->cv_path);
+                }
             }
             $path = $data['cv']->store('cvs', 'public');
             $jobSeekerData['cv_path'] = $path;
