@@ -3,6 +3,7 @@
 Jolly Jobs is a modern digital recruitment platform designed to connect tech and digital talents with employers.
 the platform aims to centralize and simplify the recruitment process with an intuitive and responsive user experience. 
 
+
 ## Key Features
 - **Candidates**: Profile management, advanced job search filtering (location, Location, tech stack), seamless applications, and application tracking.
 - **Employers**: Company profile creation, job posting management, applicant tracking, and candidate selection.
